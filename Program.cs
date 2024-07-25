@@ -1,4 +1,5 @@
 ﻿using BayoMotTool;
+using System.Numerics;
 
 var mapping = new Dictionary<int, int>
 {
@@ -116,8 +117,8 @@ foreach (var record in motion.Records)
         record.FrameCount = 2;
 }
 
-MotionUtility.AttachBone(motion, 8, 9);
-MotionUtility.AttachBone(motion, 14, 15);
+MotionUtility.AttachBone(motion, 8, 9, new Vector3(-0.063186f, 0.015647f, -0.023102f));
+MotionUtility.AttachBone(motion, 14, 15, new Vector3(0.063186f, 0.015647f, -0.023102f));
 
 MotionUtility.AddDefaultRecords(motion, 12);
 MotionUtility.AddDefaultRecords(motion, 18);

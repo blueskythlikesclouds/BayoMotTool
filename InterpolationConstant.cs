@@ -16,4 +16,6 @@ public class InterpolationConstant : IInterpolation
     {
         return Value;
     }
+
+    public override string ToString() => $"{Value}";
 }

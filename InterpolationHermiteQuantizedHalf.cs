@@ -8,6 +8,8 @@ public class InterpolationHermiteQuantizedHalf : IInterpolation
         public byte Value;
         public byte In;
         public byte Out;
+
+        public override string ToString() => $"{Frame}";
     }
 
     public ushort ValueBias { get; set; }

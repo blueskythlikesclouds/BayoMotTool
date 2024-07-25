@@ -5,11 +5,11 @@ namespace BayoMotTool;
 
 public static class MotionUtility
 {
-    public static Matrix4x4 GetTransform(Motion motion, int boneIndex, float frame)
+    public static Matrix4x4 GetTransform(Motion motion, int boneIndex, float frame, Vector3 boneTranslation)
     {
-        float translationX = 0.0f;
-        float translationY = 0.0f;
-        float translationZ = 0.0f;     
+        float translationX = boneTranslation.X;
+        float translationY = boneTranslation.Y;
+        float translationZ = boneTranslation.Z;     
         float rotationX = 0.0f;
         float rotationY = 0.0f;
         float rotationZ = 0.0f;
@@ -85,7 +85,7 @@ public static class MotionUtility
         record.Interpolation = interpolation;
     }
 
-    public static void AttachBone(Motion motion, int parentBoneIndex, int boneIndex)
+    public static void AttachBone(Motion motion, int parentBoneIndex, int boneIndex, Vector3 boneTranslation)
     {
         InterpolationLinear MakeInterpolationLinear() =>
             new InterpolationLinear { Values = new float[motion.FrameCount] };
@@ -102,8 +102,8 @@ public static class MotionUtility
 
         for (int i = 0; i < motion.FrameCount; i++)
         {
-            var parentTransform = GetTransform(motion, parentBoneIndex, i);
-            var transform = GetTransform(motion, boneIndex, i);
+            var parentTransform = GetTransform(motion, parentBoneIndex, i, boneTranslation);
+            var transform = GetTransform(motion, boneIndex, i, boneTranslation);
 
             Matrix4x4.Invert(parentTransform, out var inverseParentTransform);
 

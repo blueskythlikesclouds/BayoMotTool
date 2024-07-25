@@ -20,6 +20,9 @@ public class Record
     public ushort FrameCount { get; set; }
     public IInterpolation Interpolation { get; set; }
 
+    public override string ToString() => 
+        $"{BoneIndex}, {AnimationTrack}, {FrameCount}, {Interpolation}";
+
     // 0
     // 4
     // 6

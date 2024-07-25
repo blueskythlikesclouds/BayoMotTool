@@ -8,6 +8,8 @@ public class InterpolationHermite : IInterpolation
         public float Value;
         public float In;
         public float Out;
+
+        public override string ToString() => $"{Frame}";
     }
 
     public KeyFrame[] KeyFrames { get; set; }

@@ -8,6 +8,8 @@ public class InterpolationHermiteQuantizedHalfRelative : IInterpolation
         public byte Value;
         public byte In;
         public byte Out;
+
+        public override string ToString() => $"{Frame}";
     }
 
     public ushort ValueBias { get; set; }
@@ -85,7 +87,7 @@ public class InterpolationHermiteQuantizedHalfRelative : IInterpolation
 
             if (index <= frame && frame <= nextIndex)
             {
-                float t = (frame - index) / (nextIndex - index);
+                float t = (frame - index) / nextKeyFrame.Frame;
 
                 return
                     (2 * t * t * t - 3 * t * t + 1) * (valueBias + valueScale * keyFrame.Value) +
