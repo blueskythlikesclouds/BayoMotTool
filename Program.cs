@@ -102,38 +102,6 @@ var mapping = new Dictionary<int, int>
     {2567, 32},
 };
 
-int[] bayo1Bones =
-{
-    0,
-    1,
-    2,
-    3,
-    4,
-    5,
-    6,
-    7,
-    8,
-    9,
-    10,
-    11,
-    12,
-    13,
-    14,
-    15,
-    16,
-    17,
-    18,
-    19,
-    20,
-    21,
-    22,
-    23,
-    24,
-    25,
-    26,
-    27,
-};
-
 var motion = new Motion();
 motion.LoadBayo2(args[0]);
 
@@ -154,8 +122,8 @@ foreach (var record in motion.Records)
 MotionUtility.AttachBone(motion, 8, 9);
 MotionUtility.AttachBone(motion, 14, 15);
 
-foreach (int boneIndex in bayo1Bones)
-    MotionUtility.AddDefaultRecords(motion, boneIndex);
+MotionUtility.AddDefaultRecords(motion, 12);
+MotionUtility.AddDefaultRecords(motion, 18);
 
 MotionUtility.SortRecords(motion);
 
