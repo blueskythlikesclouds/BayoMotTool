@@ -107,9 +107,6 @@ motion.LoadBayo2(args[0]);
 
 motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (x.BoneIndex != 0xFFFF && !mapping.ContainsKey(x.BoneIndex)));
 
-foreach (var t in motion.Records.Select(x => x.Interpolation.GetType()).Distinct())
-    Console.WriteLine(t.Name);
-
 foreach (var record in motion.Records)
 {
     if (record.BoneIndex != 0xFFFF)

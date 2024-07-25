@@ -57,10 +57,11 @@ public static class MotionUtility
         }
 
         // TODO: Apparently the rotation order can change by definitions in the wmb???
-        return Matrix4x4.CreateScale(scaleX, scaleY, scaleZ) * 
-            Matrix4x4.CreateRotationX(rotationX) * 
-            Matrix4x4.CreateRotationY(rotationY) *
-            Matrix4x4.CreateRotationZ(rotationZ) *
+        return
+            Matrix4x4.CreateScale(scaleX, scaleY, scaleZ) *
+            Matrix4x4.CreateFromAxisAngle(Vector3.UnitX, rotationX) *
+            Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, rotationY) *
+            Matrix4x4.CreateFromAxisAngle(Vector3.UnitZ, rotationZ) *
             Matrix4x4.CreateTranslation(translationX, translationY, translationZ);
     }
 

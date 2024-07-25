@@ -52,13 +52,11 @@ public class Record
         { 255, () => new InterpolationNone() }
     };
 
-    public static List<byte> types = new();
-
     public void ReadBayo1(BinaryReader reader)
     {
         BoneIndex = reader.ReadUInt16();
         AnimationTrack = (AnimationTrack)reader.ReadByte();
-        types.Add(reader.ReadByte());
+        _ = reader.ReadByte();
         FrameCount = reader.ReadUInt16();
         _ = reader.ReadUInt16();
         _ = reader.ReadUInt32();
