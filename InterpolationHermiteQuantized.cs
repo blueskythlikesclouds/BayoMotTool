@@ -62,7 +62,7 @@ public class InterpolationHermiteQuantized : IInterpolation
     {
         ref var firstKeyFrame = ref KeyFrames[0];
 
-        if (firstKeyFrame.Frame <= frame)
+        if (frame <= firstKeyFrame.Frame)
             return ValueBias + ValueScale * firstKeyFrame.Value;
 
         for (int i = 0; i < KeyFrames.Length - 1; i++)

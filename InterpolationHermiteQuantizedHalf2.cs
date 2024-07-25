@@ -66,7 +66,7 @@ public class InterpolationHermiteQuantizedHalf2 : IInterpolation
 
         ref var firstKeyFrame = ref KeyFrames[0];
 
-        if (firstKeyFrame.Frame <= frame)
+        if (frame <= firstKeyFrame.Frame)
             return valueBias + valueScale * firstKeyFrame.Value;
 
         float inBias = PgHalf.ToSingle(InBias);
