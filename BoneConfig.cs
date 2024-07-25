@@ -9,6 +9,7 @@ public record BoneToAttach(int ParentBoneIndex, int BoneIndex, float X, float Y,
 public class BoneConfig
 {
     public Dictionary<int, int> BoneMap { get; set; }
+    public bool RemoveUnmappedBones { get; set; }
     public List<BoneToCreate> BonesToCreate { get; set; }
     public List<BoneToAttach> BonesToAttach { get; set; }
 }
