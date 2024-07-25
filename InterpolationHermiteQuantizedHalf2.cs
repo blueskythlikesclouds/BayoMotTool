@@ -85,9 +85,9 @@ public class InterpolationHermiteQuantizedHalf2 : IInterpolation
 
                 return
                     (2 * t * t * t - 3 * t * t + 1) * (valueBias + valueScale * keyFrame.Value) +
-                    (t * t * t - 2 * t * t + t) * (inBias + inScale * keyFrame.In) +
+                    (t * t * t - 2 * t * t + t) * (outBias + outScale * keyFrame.Out) +
                     (-2 * t * t * t + 3 * t * t) * (valueBias + valueScale * nextKeyFrame.Value) +
-                    (t * t * t - t * t) * (outBias + outScale * nextKeyFrame.Out);
+                    (t * t * t - t * t) * (inBias + inScale * nextKeyFrame.In);
             }
         }
 

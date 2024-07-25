@@ -58,9 +58,9 @@ public class InterpolationHermite : IInterpolation
 
                 return 
                     (2 * t * t * t - 3 * t * t + 1) * keyFrame.Value + 
-                    (t * t * t - 2 * t * t + t) * keyFrame.In + 
+                    (t * t * t - 2 * t * t + t) * keyFrame.Out + 
                     (-2 * t * t * t + 3 * t * t) * nextKeyFrame.Value +
-                    (t * t * t - t * t) * nextKeyFrame.Out;
+                    (t * t * t - t * t) * nextKeyFrame.In;
             }
         }
 
