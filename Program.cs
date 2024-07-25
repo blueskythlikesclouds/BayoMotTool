@@ -29,11 +29,11 @@ var mapping = new Dictionary<int, int>
     {65, 5}, 
     {113, 8}, 
     {129, 29}, 
-    {145, 12}, 
+    {145, 11}, 
     {146, 30}, 
     {177, 14}, 
     {193, 31}, 
-    {209, 18}, 
+    {209, 17}, 
     {210, 32}, 
     {241, 33}, 
     {257, 34}, 
@@ -90,20 +90,39 @@ var mapping = new Dictionary<int, int>
     {1541, 148}, 
     {1542, 149}, 
     {1543, 299}, 
-    {4095, 0}
+
+    // Bayonetta 3
+    {2560, 8},
+    {2561, 14},
+
+    {2570, 33},
+    {2571, 35},
+
+    {2566, 30},
+    {2567, 32},
 };
 
 var motion = new Motion();
-motion.Load(args[0]);
+motion.LoadBayo2(args[0]);
+
+foreach (var record in motion.Records.Where(x => x.BoneIndex != 0xFFFF && !mapping.ContainsKey(x.BoneIndex)).DistinctBy(x => x.BoneIndex))
+{
+    Console.WriteLine(record.BoneIndex);
+}
+
+motion.Records.RemoveAll(x => x.BoneIndex != 0xFFFF && !mapping.ContainsKey(x.BoneIndex));
 
 foreach (var record in motion.Records)
 {
-    if (mapping.TryGetValue(record.BoneIndex, out int index))
-        record.BoneIndex = (ushort)index;
-
-    if ((record.BoneIndex == 9 || record.BoneIndex == 15) && (record.ComponentIndex >= 0 && record.ComponentIndex <= 2))
-        record.Value = new RecordValueConstant { Value = record.ComponentIndex >= 7 ? 1.0f : 0.0f };
+    if (record.BoneIndex != 0xFFFF)
+        record.BoneIndex = (ushort)mapping[record.BoneIndex];
 }
 
-motion.Save(args.Length > 1 ? args[1] : args[0]);
+MotionUtility.AttachBone(motion, 8, 9);
+
+MotionUtility.AttachBone(motion, 14, 15);
+
+MotionUtility.SortRecords(motion);
+
+motion.SaveBayo1(args.Length > 1 ? args[1] : args[0]);
 
