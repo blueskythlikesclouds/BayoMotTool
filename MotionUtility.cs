@@ -171,7 +171,7 @@ public static class MotionUtility
         AnimationTrack.ScaleZ,
     };
 
-    public static void AddDefaultRecords(Motion motion, int boneIndex)
+    public static void AddDefaultRecords(Motion motion, int boneIndex, Vector3 boneTranslation)
     {
         foreach (var animationTrack in _animationTracks)
         {
@@ -182,7 +182,11 @@ public static class MotionUtility
                     BoneIndex = (ushort)boneIndex,
                     AnimationTrack = animationTrack,
                     FrameCount = 2,
-                    Interpolation = new InterpolationConstant { Value = animationTrack >= AnimationTrack.ScaleX ? 1.0f : 0.0f }
+                    Interpolation = new InterpolationConstant 
+                    { 
+                        Value = animationTrack <= AnimationTrack.TranslationZ ? boneTranslation[(int)animationTrack] :
+                            animationTrack >= AnimationTrack.ScaleX ? 1.0f : 0.0f 
+                    }
                 });
             }
         }
