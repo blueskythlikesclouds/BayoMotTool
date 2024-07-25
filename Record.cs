@@ -18,9 +18,12 @@ public class Record
     public ushort BoneIndex { get; set; }
     public AnimationTrack AnimationTrack { get; set; }
     public ushort FrameCount { get; set; }
-    public ushort Unknown { get; set; }
     public IInterpolation Interpolation { get; set; }
 
+    // 0
+    // 4
+    // 6
+    // 7
     private static readonly Dictionary<Type, int> _bayo1InterpolationTypes = new()
     {
         { typeof(InterpolationConstant), 0 },
@@ -48,6 +51,18 @@ public class Record
         { 8, () => new InterpolationHermiteQuantizedHalf2() },
         { 255, () => new InterpolationNone() }
     };
+
+    public static List<byte> types = new();
+
+    public void ReadBayo1(BinaryReader reader)
+    {
+        BoneIndex = reader.ReadUInt16();
+        AnimationTrack = (AnimationTrack)reader.ReadByte();
+        types.Add(reader.ReadByte());
+        FrameCount = reader.ReadUInt16();
+        _ = reader.ReadUInt16();
+        _ = reader.ReadUInt32();
+    }
 
     public void ReadBayo2(BinaryReader reader, long recordOffset)
     {
@@ -78,7 +93,7 @@ public class Record
         writer.Write((byte)AnimationTrack);
         writer.Write((byte)_bayo1InterpolationTypes[Interpolation.GetType()]);
         writer.Write(FrameCount);
-        writer.Write((ushort)0xFFFF);
+        writer.Write((ushort)(BoneIndex == 0x7FFF ? 0 : 0xFFFF));
 
         if (Interpolation is InterpolationConstant valueConstant)
         {

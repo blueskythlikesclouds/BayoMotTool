@@ -6,6 +6,24 @@ public class Motion
     public ushort FrameCount { get; set; }
     public List<Record> Records { get; set; } = [];
 
+    public void ReadBayo1(BinaryReader reader)
+    {
+        uint signature = reader.ReadUInt32();
+        Flags = reader.ReadUInt16();
+        FrameCount = reader.ReadUInt16();
+        uint recordOffset = reader.ReadUInt32();
+        uint recordCount = reader.ReadUInt32();
+
+        reader.BaseStream.Seek(recordOffset, SeekOrigin.Begin);
+
+        for (int i = 0; i < recordCount; i++)
+        {
+            var record = new Record();
+            record.ReadBayo1(reader);
+            Records.Add(record);
+        }
+    }
+
     public void ReadBayo2(BinaryReader reader)
     {
         uint signature = reader.ReadUInt32();
@@ -49,6 +67,13 @@ public class Motion
 
             Records[i].WriteBayo1(writer, recordOffsets[i]);
         }
+    }
+
+    public void LoadBayo1(string filePath)
+    {
+        using var stream = File.OpenRead(filePath);
+        using var reader = new BinaryReader(stream);
+        ReadBayo1(reader);
     }
 
     public void LoadBayo2(string filePath)

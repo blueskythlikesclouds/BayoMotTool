@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System.Diagnostics;
+using System.Numerics;
 
 namespace BayoMotTool;
 
@@ -127,7 +128,7 @@ public static class MotionUtility
 
             if (interpolationLinear.Values.All(x => MathF.Abs(x - interpolationLinear.Values[0]) < 0.0001f))
             {
-                frameCount = 1;
+                frameCount = 2;
                 interpolation = new InterpolationConstant { Value = interpolationLinear.Values[0] };
             }
 
@@ -147,12 +148,42 @@ public static class MotionUtility
 
     public static void SortRecords(Motion motion)
     {
-        motion.Records = motion.Records.OrderBy(x => 
+        motion.Records = motion.Records.OrderBy(x => x.BoneIndex == 0xFFFF ? 0 : x.BoneIndex + 1).ThenBy(x => x.AnimationTrack).ToList();
+        motion.Records.Add(new Record
         {
-            if (x.BoneIndex == 0xFFFF)
-                return x.Interpolation is InterpolationNone ? int.MaxValue : 0;
+            BoneIndex = 0x7FFF,
+            AnimationTrack = (AnimationTrack)0xFF,
+            Interpolation = new InterpolationNone()
+        });
+    }
 
-            return x.BoneIndex + 1;
-        }).ThenBy(x => x.AnimationTrack).ToList();
+    private static readonly AnimationTrack[] _animationTracks =
+    {
+        AnimationTrack.TranslationX,
+        AnimationTrack.TranslationY,
+        AnimationTrack.TranslationZ,
+        AnimationTrack.RotationX,
+        AnimationTrack.RotationY,
+        AnimationTrack.RotationZ,
+        AnimationTrack.ScaleX,
+        AnimationTrack.ScaleY,
+        AnimationTrack.ScaleZ,
+    };
+
+    public static void AddDefaultRecords(Motion motion, int boneIndex)
+    {
+        foreach (var animationTrack in _animationTracks)
+        {
+            if (!motion.Records.Any(x => x.BoneIndex == boneIndex && x.AnimationTrack == animationTrack))
+            {
+                motion.Records.Add(new Record
+                {
+                    BoneIndex = (ushort)boneIndex,
+                    AnimationTrack = animationTrack,
+                    FrameCount = 2,
+                    Interpolation = new InterpolationConstant { Value = animationTrack >= AnimationTrack.ScaleX ? 1.0f : 0.0f }
+                });
+            }
+        }
     }
 }
