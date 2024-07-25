@@ -24,10 +24,11 @@ public class Motion
         }
     }
 
-    public void ReadBayo2(BinaryReader reader)
+    public void ReadBayo2(EndianBinaryReader reader)
     {
         uint signature = reader.ReadUInt32();
         uint version = reader.ReadUInt32();
+        reader.IsBigEndian = version != 0x20120405;
         Flags = reader.ReadUInt16();
         FrameCount = reader.ReadUInt16();
         uint recordOffset = reader.ReadUInt32();
@@ -79,7 +80,7 @@ public class Motion
     public void LoadBayo2(string filePath)
     {
         using var stream = File.OpenRead(filePath);
-        using var reader = new BinaryReader(stream);
+        using var reader = new EndianBinaryReader(stream);
         ReadBayo2(reader);
     }
 
