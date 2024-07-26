@@ -42,8 +42,8 @@ motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (boneConfig.RemoveUnmappe
 
 foreach (var record in motion.Records)
 {
-    if (record.BoneIndex != 0xFFFF)
-        record.BoneIndex = (ushort)boneConfig.BoneMap[record.BoneIndex];
+    if (boneConfig.BoneMap.TryGetValue(record.BoneIndex, out var boneIndex))
+        record.BoneIndex = (ushort)boneIndex;
 
     if (record.Interpolation is InterpolationConstant)
         record.FrameCount = 2;
