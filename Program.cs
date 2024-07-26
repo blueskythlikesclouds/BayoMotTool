@@ -55,6 +55,9 @@ foreach (var boneToAttach in boneConfig.BonesToAttach)
 foreach (var boneToCreate in boneConfig.BonesToCreate)
     MotionUtility.AddDefaultRecords(motion, boneToCreate.BoneIndex, new Vector3(boneToCreate.X, boneToCreate.Y, boneToCreate.Z));
 
+foreach (int boneToReorient in boneConfig.BonesToReorient)
+    MotionUtility.ReorientBone(motion, boneToReorient);
+
 MotionUtility.SortRecords(motion);
 
 motion.SaveBayo1(outputFilePath ?? inputFilePath);

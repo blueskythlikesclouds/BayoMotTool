@@ -81,6 +81,13 @@ public static class MotionUtility
             motion.Records.Add(record);
         }
 
+        if (interpolation is InterpolationLinear interpolationLinear && 
+            interpolationLinear.Values.All(x => MathF.Abs(x - interpolationLinear.Values[0]) < 0.0001f))
+        {
+            frameCount = 2;
+            interpolation = new InterpolationConstant { Value = interpolationLinear.Values[0] };
+        }
+
         record.FrameCount = (ushort)frameCount;
         record.Interpolation = interpolation;
     }
@@ -100,6 +107,38 @@ public static class MotionUtility
         {
             float rotationDifference = AngleNormalize(interpolation.Values[i] - interpolation.Values[i - 1]);
             interpolation.Values[i] = interpolation.Values[i - 1] + rotationDifference;
+        }
+    }
+
+    public static void ToEulerAnglesXYZ(in Matrix4x4 matrix, out float x, out float y, out float z)
+    {
+        y = MathF.Asin(-MathF.Min(1.0f, MathF.Max(-1.0f, matrix.M13)));
+
+        if (MathF.Abs(matrix.M13) < 0.9999999)
+        {
+            x = MathF.Atan2(matrix.M23, matrix.M33);
+            z = MathF.Atan2(matrix.M12, matrix.M11);
+        }
+        else
+        {
+            x = MathF.Atan2(-matrix.M32, matrix.M22);
+            z = 0;
+        }
+    }
+
+    public static void ToEulerAnglesYZX(in Matrix4x4 matrix, out float x, out float y, out float z)
+    {
+        z = MathF.Asin(-MathF.Min(1.0f, MathF.Max(-1.0f, matrix.M21)));
+
+        if (MathF.Abs(matrix.M21) < 0.9999999)
+        {
+            x = MathF.Atan2(matrix.M23, matrix.M22);
+            y = MathF.Atan2(matrix.M31, matrix.M11);
+        }
+        else
+        {
+            x = 0;
+            y = MathF.Atan2(-matrix.M13, matrix.M33);
         }
     }
 
@@ -127,14 +166,17 @@ public static class MotionUtility
 
             var newTransform = transform * inverseParentTransform;
 
-            Matrix4x4.Decompose(newTransform, out var scale, out var rotation, out var translation);
+            Matrix4x4.Decompose(newTransform, out var scale, out _, out var translation);
 
             translationX.Values[i] = translation.X;
             translationY.Values[i] = translation.Y;
             translationZ.Values[i] = translation.Z;
-            rotationX.Values[i] = rotation.GetPitch();
-            rotationY.Values[i] = rotation.GetYaw();
-            rotationZ.Values[i] = rotation.GetRoll();
+
+            ToEulerAnglesXYZ(newTransform,
+                out rotationX.Values[i],
+                out rotationY.Values[i],
+                out rotationZ.Values[i]);
+
             scaleX.Values[i] = scale.X;
             scaleY.Values[i] = scale.Y;
             scaleZ.Values[i] = scale.Z;
@@ -144,19 +186,8 @@ public static class MotionUtility
         UnrollAngles(rotationY);
         UnrollAngles(rotationZ);
 
-        void AddOrReplaceRecord(AnimationTrack animationTrack, InterpolationLinear interpolationLinear)
-        {
-            int frameCount = motion.FrameCount;
-            IInterpolation interpolation = interpolationLinear;
-
-            if (interpolationLinear.Values.All(x => MathF.Abs(x - interpolationLinear.Values[0]) < 0.0001f))
-            {
-                frameCount = 2;
-                interpolation = new InterpolationConstant { Value = interpolationLinear.Values[0] };
-            }
-
-            MotionUtility.AddOrReplaceRecord(motion, boneIndex, animationTrack, frameCount, interpolation);
-        }
+        void AddOrReplaceRecord(AnimationTrack animationTrack, InterpolationLinear interpolationLinear) => 
+            MotionUtility.AddOrReplaceRecord(motion, boneIndex, animationTrack, motion.FrameCount, interpolationLinear);
 
         AddOrReplaceRecord(AnimationTrack.TranslationX, translationX);
         AddOrReplaceRecord(AnimationTrack.TranslationY, translationY);
@@ -212,5 +243,65 @@ public static class MotionUtility
                 });
             }
         }
+    }
+
+    public static void ReorientBone(Motion motion, int boneIndex)
+    {
+        InterpolationLinear MakeInterpolationLinear() =>
+            new InterpolationLinear { Values = new float[motion.FrameCount] };
+
+        var rotationX = MakeInterpolationLinear();
+        var rotationY = MakeInterpolationLinear();
+        var rotationZ = MakeInterpolationLinear();
+
+        for (int i = 0; i < motion.FrameCount; i++)
+        {
+            float x = 0.0f;
+            float y = 0.0f;
+            float z = 0.0f;
+
+            foreach (var record in motion.Records)
+            {
+                if (record.BoneIndex == boneIndex)
+                {
+                    float value = record.Interpolation.Interpolate(i);
+
+                    switch (record.AnimationTrack)
+                    {
+                        case AnimationTrack.RotationX:
+                            x = value;
+                            break;
+                        case AnimationTrack.RotationY:
+                            y = value;
+                            break;
+                        case AnimationTrack.RotationZ:
+                            z = value;
+                            break;
+                    }
+                }
+            }
+
+            var transform =
+                Matrix4x4.CreateFromAxisAngle(Vector3.UnitX, x) *
+                Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, y) *
+                Matrix4x4.CreateFromAxisAngle(Vector3.UnitZ, z) *
+                Matrix4x4.Identity;
+
+            ToEulerAnglesYZX(transform,
+                out rotationX.Values[i],
+                out rotationY.Values[i],
+                out rotationZ.Values[i]);
+        }
+
+        UnrollAngles(rotationX);
+        UnrollAngles(rotationY);
+        UnrollAngles(rotationZ);
+
+        void AddOrReplaceRecord(AnimationTrack animationTrack, InterpolationLinear interpolationLinear) =>
+            MotionUtility.AddOrReplaceRecord(motion, boneIndex, animationTrack, motion.FrameCount, interpolationLinear);
+
+        AddOrReplaceRecord(AnimationTrack.RotationX, rotationX);
+        AddOrReplaceRecord(AnimationTrack.RotationY, rotationY);
+        AddOrReplaceRecord(AnimationTrack.RotationZ, rotationZ);
     }
 }

@@ -12,6 +12,7 @@ public class BoneConfig
     public bool RemoveUnmappedBones { get; set; }
     public List<BoneToCreate> BonesToCreate { get; set; }
     public List<BoneToAttach> BonesToAttach { get; set; }
+    public List<int> BonesToReorient { get; set; }
 }
 
 [JsonSourceGenerationOptions(WriteIndented = true)]
