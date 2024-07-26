@@ -85,6 +85,24 @@ public static class MotionUtility
         record.Interpolation = interpolation;
     }
 
+    public static float AngleNormalize(float x)
+    {
+        float y = (x + MathF.PI) % MathF.Tau;
+        return y < 0.0f ? y + MathF.PI : y - MathF.PI;
+    }
+
+    public static void UnrollAngles(InterpolationLinear interpolation)
+    {
+        for (int i = 0; i < interpolation.Values.Length; i++)
+            interpolation.Values[i] = AngleNormalize(interpolation.Values[i]);
+
+        for (int i = 1; i < interpolation.Values.Length; i++)
+        {
+            float rotationDifference = AngleNormalize(interpolation.Values[i] - interpolation.Values[i - 1]);
+            interpolation.Values[i] = interpolation.Values[i - 1] + rotationDifference;
+        }
+    }
+
     public static void AttachBone(Motion motion, int parentBoneIndex, int boneIndex, Vector3 boneTranslation)
     {
         InterpolationLinear MakeInterpolationLinear() =>
@@ -121,6 +139,10 @@ public static class MotionUtility
             scaleY.Values[i] = scale.Y;
             scaleZ.Values[i] = scale.Z;
         }
+
+        UnrollAngles(rotationX);
+        UnrollAngles(rotationY);
+        UnrollAngles(rotationZ);
 
         void AddOrReplaceRecord(AnimationTrack animationTrack, InterpolationLinear interpolationLinear)
         {
