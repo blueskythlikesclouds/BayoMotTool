@@ -38,25 +38,60 @@ var boneConfig = JsonSerializer.Deserialize(
 var motion = new Motion();
 motion.LoadBayo2(inputFilePath);
 
-motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (boneConfig.RemoveUnmappedBones && x.BoneIndex != 0xFFFF && !boneConfig.BoneMap.ContainsKey(x.BoneIndex)));
+motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (boneConfig.BoneMap != null && boneConfig.RemoveUnmappedBones && 
+    x.BoneIndex != 0xFFFF && !boneConfig.BoneMap.ContainsKey(x.BoneIndex)));
 
 foreach (var record in motion.Records)
 {
-    if (boneConfig.BoneMap.TryGetValue(record.BoneIndex, out var boneIndex))
+    if (boneConfig.BoneMap != null && boneConfig.BoneMap.TryGetValue(record.BoneIndex, out var boneIndex))
         record.BoneIndex = (ushort)boneIndex;
 
     if (record.Interpolation is InterpolationConstant)
         record.FrameCount = 2;
 }
 
-foreach (var boneToAttach in boneConfig.BonesToAttach)
-    MotionUtility.AttachBone(motion, boneToAttach.ParentBoneIndex, boneToAttach.BoneIndex, new Vector3(boneToAttach.X, boneToAttach.Y, boneToAttach.Z));
+if (boneConfig.BonesToCreate != null)
+{ 
+    foreach (var boneToCreate in boneConfig.BonesToCreate)
+        MotionUtility.AddDefaultRecords(motion, boneToCreate.BoneIndex, new Vector3(boneToCreate.BoneTranslationX, boneToCreate.BoneTranslationY, boneToCreate.BoneTranslationZ));
+}
 
-foreach (var boneToCreate in boneConfig.BonesToCreate)
-    MotionUtility.AddDefaultRecords(motion, boneToCreate.BoneIndex, new Vector3(boneToCreate.X, boneToCreate.Y, boneToCreate.Z));
+if (boneConfig.BonesToAttach != null)
+{ 
+    foreach (var boneToAttach in boneConfig.BonesToAttach)
+    { 
+        MotionUtility.AttachBone(motion,
+            boneToAttach.ParentBoneIndex, 
+            new Vector3(boneToAttach.ParentBoneTranslationX, boneToAttach.ParentBoneTranslationY, boneToAttach.ParentBoneTranslationZ),
+            boneToAttach.BoneIndex, 
+            new Vector3(boneToAttach.BoneTranslationX, boneToAttach.BoneTranslationY, boneToAttach.BoneTranslationZ),
+            boneToAttach.InvertParentTransform);
+    }
+}
 
-foreach (int boneToReorient in boneConfig.BonesToReorient)
-    MotionUtility.ReorientBone(motion, boneToReorient);
+if (boneConfig.BonesToReorient != null)
+{ 
+    foreach (int boneToReorient in boneConfig.BonesToReorient)
+        MotionUtility.ReorientBone(motion, boneToReorient);
+}
+
+if (boneConfig.BonesToDuplicate != null)
+{
+    foreach (var boneToDuplicate in boneConfig.BonesToDuplicate)
+    {
+        motion.Records.RemoveAll(x => x.BoneIndex == boneToDuplicate.DestinationBoneIndex);
+
+        var duplicatedRecords = motion.Records.Where(x => x.BoneIndex == boneToDuplicate.SourceBoneIndex).Select(x => new Record
+        {
+            BoneIndex = (ushort)boneToDuplicate.DestinationBoneIndex,
+            AnimationTrack = x.AnimationTrack,
+            FrameCount = x.FrameCount,
+            Interpolation = x.Interpolation
+        }).ToList();
+
+        motion.Records.AddRange(duplicatedRecords);
+    }
+}
 
 MotionUtility.SortRecords(motion);
 

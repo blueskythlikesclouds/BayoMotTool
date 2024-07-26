@@ -142,7 +142,7 @@ public static class MotionUtility
         }
     }
 
-    public static void AttachBone(Motion motion, int parentBoneIndex, int boneIndex, Vector3 boneTranslation)
+    public static void AttachBone(Motion motion, int parentBoneIndex, Vector3 parentBoneTranslation, int boneIndex, Vector3 boneTranslation, bool invertParentTransform)
     {
         InterpolationLinear MakeInterpolationLinear() =>
             new InterpolationLinear { Values = new float[motion.FrameCount] };
@@ -159,12 +159,13 @@ public static class MotionUtility
 
         for (int i = 0; i < motion.FrameCount; i++)
         {
-            var parentTransform = GetTransform(motion, parentBoneIndex, i, boneTranslation);
+            var parentTransform = GetTransform(motion, parentBoneIndex, i, parentBoneTranslation);
             var transform = GetTransform(motion, boneIndex, i, boneTranslation);
 
-            Matrix4x4.Invert(parentTransform, out var inverseParentTransform);
+            if (invertParentTransform)
+                Matrix4x4.Invert(parentTransform, out parentTransform);
 
-            var newTransform = transform * inverseParentTransform;
+            var newTransform = transform * parentTransform;
 
             Matrix4x4.Decompose(newTransform, out var scale, out _, out var translation);
 
