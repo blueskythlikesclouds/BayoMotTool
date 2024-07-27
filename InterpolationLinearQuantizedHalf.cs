@@ -6,6 +6,11 @@ public class InterpolationLinearQuantizedHalf : IInterpolation
     public ushort ValueScale { get; set; }
     public byte[] Values { get; set; }
 
+    public void ReadBayo1(BinaryReader reader, int count)
+    {
+        throw new NotImplementedException();
+    }
+
     public void ReadBayo2(BinaryReader reader, int count)
     {
         ValueBias = reader.ReadUInt16();

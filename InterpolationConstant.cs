@@ -4,6 +4,10 @@ public class InterpolationConstant : IInterpolation
 {
     public float Value { get; set; }
 
+    public void ReadBayo1(BinaryReader reader, int count)
+    {
+    }
+
     public void ReadBayo2(BinaryReader reader, int count)
     {
     }

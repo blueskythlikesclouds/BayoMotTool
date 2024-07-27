@@ -4,6 +4,11 @@ public class InterpolationLinear : IInterpolation
 {
     public float[] Values { get; set; }
 
+    public void ReadBayo1(BinaryReader reader, int count)
+    {
+        throw new NotImplementedException();
+    }
+
     public void ReadBayo2(BinaryReader reader, int count)
     {
         Values = new float[count];

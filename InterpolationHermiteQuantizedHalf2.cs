@@ -20,6 +20,11 @@ public class InterpolationHermiteQuantizedHalf2 : IInterpolation
     public ushort OutScale { get; set; }
     public KeyFrame[] KeyFrames { get; set; }
 
+    public void ReadBayo1(BinaryReader reader, int count)
+    {
+        throw new NotImplementedException();
+    }
+
     public void ReadBayo2(BinaryReader reader, int count)
     {
         ValueBias = reader.ReadUInt16();

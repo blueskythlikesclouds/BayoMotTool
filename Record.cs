@@ -41,7 +41,16 @@ public class Record
         { typeof(InterpolationNone), 255 },
     };
 
-    private static readonly Dictionary<int, Func<IInterpolation>> _bayo2InterpolationTypes = new()
+    private static readonly Dictionary<int, Func<IInterpolation>> _bayo1InterpolationFactory = new()
+    {
+        { 0, () => new InterpolationConstant() },
+        { 4, () => new InterpolationHermiteQuantized() },
+        { 6, () => new InterpolationHermiteQuantizedHalfRelative() },
+        { 7, () => new InterpolationHermiteQuantizedHalf() },
+        { 255, () => new InterpolationNone() }
+    };
+
+    private static readonly Dictionary<int, Func<IInterpolation>> _bayo2InterpolationFactory = new()
     {
         { 0, () => new InterpolationConstant() },
         { 1, () => new InterpolationLinear() },
@@ -59,10 +68,22 @@ public class Record
     {
         BoneIndex = reader.ReadUInt16();
         AnimationTrack = (AnimationTrack)reader.ReadByte();
-        _ = reader.ReadByte();
+        byte interpolationType = reader.ReadByte();
         FrameCount = reader.ReadUInt16();
         _ = reader.ReadUInt16();
-        _ = reader.ReadUInt32();
+
+        Interpolation = _bayo1InterpolationFactory[interpolationType]();
+
+        if (Interpolation is InterpolationConstant interpolationConstant)
+        {
+            interpolationConstant.Value = reader.ReadSingle();
+        }
+        else if (Interpolation is not InterpolationNone)
+        {
+            reader.BaseStream.Seek(reader.ReadUInt32(), SeekOrigin.Begin);
+
+            Interpolation.ReadBayo1(reader, FrameCount);
+        }
     }
 
     public void ReadBayo2(BinaryReader reader, long recordOffset)
@@ -74,7 +95,7 @@ public class Record
         byte interpolationType = reader.ReadByte();
         FrameCount = reader.ReadUInt16();
         _ = reader.ReadUInt16();
-        Interpolation = _bayo2InterpolationTypes[interpolationType]();
+        Interpolation = _bayo2InterpolationFactory[interpolationType]();
 
         if (Interpolation is InterpolationConstant interpolationConstant)
         {

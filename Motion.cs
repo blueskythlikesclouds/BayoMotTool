@@ -1,4 +1,6 @@
-﻿namespace BayoMotTool;
+﻿using System.Buffers.Binary;
+
+namespace BayoMotTool;
 
 public class Motion
 {
@@ -6,18 +8,27 @@ public class Motion
     public ushort FrameCount { get; set; }
     public List<Record> Records { get; set; } = [];
 
-    public void ReadBayo1(BinaryReader reader)
+    public void ReadBayo1(EndianBinaryReader reader)
     {
         uint signature = reader.ReadUInt32();
         Flags = reader.ReadUInt16();
         FrameCount = reader.ReadUInt16();
         uint recordOffset = reader.ReadUInt32();
-        uint recordCount = reader.ReadUInt32();
 
-        reader.BaseStream.Seek(recordOffset, SeekOrigin.Begin);
+        if (recordOffset != 0x10)
+        {
+            Flags = BinaryPrimitives.ReverseEndianness(Flags);
+            FrameCount = BinaryPrimitives.ReverseEndianness(FrameCount);
+            recordOffset = BinaryPrimitives.ReverseEndianness(recordOffset);
+            reader.IsBigEndian = true;
+        }
+
+        uint recordCount = reader.ReadUInt32();
 
         for (int i = 0; i < recordCount; i++)
         {
+            reader.BaseStream.Seek(recordOffset + i * 12, SeekOrigin.Begin);
+
             var record = new Record();
             record.ReadBayo1(reader);
             Records.Add(record);
@@ -73,7 +84,7 @@ public class Motion
     public void LoadBayo1(string filePath)
     {
         using var stream = File.OpenRead(filePath);
-        using var reader = new BinaryReader(stream);
+        using var reader = new EndianBinaryReader(stream);
         ReadBayo1(reader);
     }
 

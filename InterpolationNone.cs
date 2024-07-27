@@ -2,6 +2,10 @@
 
 public class InterpolationNone : IInterpolation
 {
+    public void ReadBayo1(BinaryReader reader, int count)
+    {
+    }
+
     public void ReadBayo2(BinaryReader reader, int count)
     {
     }

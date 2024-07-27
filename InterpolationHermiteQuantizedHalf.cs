@@ -4,7 +4,7 @@ public class InterpolationHermiteQuantizedHalf : IInterpolation
 {
     public struct KeyFrame
     {
-        public byte Frame;
+        public ushort Frame;
         public byte Value;
         public byte In;
         public byte Out;
@@ -19,6 +19,29 @@ public class InterpolationHermiteQuantizedHalf : IInterpolation
     public ushort OutBias { get; set; }
     public ushort OutScale { get; set; }
     public KeyFrame[] KeyFrames { get; set; }
+
+    public void ReadBayo1(BinaryReader reader, int count)
+    {
+        ValueBias = reader.ReadUInt16();
+        ValueScale = reader.ReadUInt16();
+        InBias = reader.ReadUInt16();
+        InScale = reader.ReadUInt16();
+        OutBias = reader.ReadUInt16();
+        OutScale = reader.ReadUInt16();
+
+        KeyFrames = new KeyFrame[count];
+
+        for (int i = 0; i < count; i++)
+        {
+            ref var keyFrame = ref KeyFrames[i];
+
+            keyFrame.Frame = reader.ReadUInt16();
+            _ = reader.ReadByte();
+            keyFrame.Value = reader.ReadByte();
+            keyFrame.In = reader.ReadByte();
+            keyFrame.Out = reader.ReadByte();
+        }
+    }
 
     public void ReadBayo2(BinaryReader reader, int count)
     {
@@ -53,7 +76,7 @@ public class InterpolationHermiteQuantizedHalf : IInterpolation
 
         foreach (var keyFrame in KeyFrames)
         {
-            writer.Write((ushort)keyFrame.Frame);
+            writer.Write(keyFrame.Frame);
             writer.Write((byte)0);
             writer.Write(keyFrame.Value);
             writer.Write(keyFrame.In);

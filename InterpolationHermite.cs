@@ -14,7 +14,7 @@ public class InterpolationHermite : IInterpolation
 
     public KeyFrame[] KeyFrames { get; set; }
 
-    public void ReadBayo2(BinaryReader reader, int count)
+    public void ReadBayo1(BinaryReader reader, int count)
     {
         KeyFrames = new KeyFrame[count];
 
@@ -28,6 +28,11 @@ public class InterpolationHermite : IInterpolation
             keyFrame.In = reader.ReadSingle();
             keyFrame.Out = reader.ReadSingle();
         }
+    }
+
+    public void ReadBayo2(BinaryReader reader, int count)
+    {
+        ReadBayo1(reader, count);
     }
 
     public void WriteBayo1(BinaryWriter writer)

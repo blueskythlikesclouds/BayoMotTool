@@ -20,7 +20,7 @@ public class InterpolationHermiteQuantized : IInterpolation
     public float OutScale { get; set; }
     public KeyFrame[] KeyFrames { get; set; }
 
-    public void ReadBayo2(BinaryReader reader, int count)
+    public void ReadBayo1(BinaryReader reader, int count)
     {
         ValueBias = reader.ReadSingle();
         ValueScale = reader.ReadSingle();
@@ -40,6 +40,11 @@ public class InterpolationHermiteQuantized : IInterpolation
             keyFrame.In = reader.ReadUInt16();
             keyFrame.Out = reader.ReadUInt16();
         }
+    }
+
+    public void ReadBayo2(BinaryReader reader, int count)
+    {
+        ReadBayo1(reader, count);
     }
 
     public void WriteBayo1(BinaryWriter writer)
