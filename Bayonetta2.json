@@ -150,6 +150,28 @@
             "BoneTranslatonY": 0.015647,
             "BoneTranslatonZ": -0.023102,
             "InvertParentTransform": true
+        },
+        {
+            "ParentBoneIndex": 21,
+            "ParentBoneTranslationX": 0,
+            "ParentBoneTranslationY": -0.486195,
+            "ParentBoneTranslationZ": -0.029279,
+            "BoneIndex": 34,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": -0.486195,
+            "BoneTranslationZ": -0.029279,
+            "InvertParentTransform": true
+        },
+        {
+            "ParentBoneIndex": 25,
+            "ParentBoneTranslationX": 0,
+            "ParentBoneTranslationY": -0.486195,
+            "ParentBoneTranslationZ": -0.029279,
+            "BoneIndex": 36,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": -0.486195,
+            "BoneTranslationZ": -0.029279,
+            "InvertParentTransform": true
         }
     ],
     "BonesToReorient": [

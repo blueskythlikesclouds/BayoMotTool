@@ -33,9 +33,7 @@
         "193": 31,
         "209": 17,
         "210": 32,
-        "241": 33,
         "257": 34,
-        "305": 35,
         "321": 36,
         "512": 45,
         "513": 64,
@@ -93,9 +91,7 @@
         "2566": 30,
         "2567": 32,
         "2568": 34,
-        "2569": 36,
-        "2577": 33,
-        "2578": 35
+        "2569": 36
     },
     "RemoveUnmappedBones": true,
     "BonesToCreate": [
@@ -166,8 +162,8 @@
             "ParentBoneTranslationZ": -0.029279,
             "BoneIndex": 34,
             "BoneTranslationX": 0,
-            "BoneTranslationY": 0,
-            "BoneTranslationZ": 0,
+            "BoneTranslationY": -0.486195,
+            "BoneTranslationZ": -0.029279,
             "InvertParentTransform": true
         },
         {
@@ -177,8 +173,8 @@
             "ParentBoneTranslationZ": -0.029279,
             "BoneIndex": 36,
             "BoneTranslationX": 0,
-            "BoneTranslationY": 0,
-            "BoneTranslationZ": 0,
+            "BoneTranslationY": -0.486195,
+            "BoneTranslationZ": -0.029279,
             "InvertParentTransform": true
         }
     ],
