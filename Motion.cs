@@ -41,6 +41,7 @@ public class Motion
         uint version = reader.ReadUInt32();
         reader.IsBigEndian = version != 0x20120405;
         Flags = reader.ReadUInt16();
+        Flags = 0x1;
         FrameCount = reader.ReadUInt16();
         uint recordOffset = reader.ReadUInt32();
         uint recordCount = reader.ReadUInt32();
@@ -56,7 +57,7 @@ public class Motion
     public void WriteBayo1(BinaryWriter writer)
     {
         writer.Write(0x746F6D);
-        writer.Write((ushort)0x1);
+        writer.Write(Flags);
         writer.Write(FrameCount);
         writer.Write(0x10);
         writer.Write(Records.Count);

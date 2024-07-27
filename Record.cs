@@ -18,6 +18,7 @@ public class Record
     public ushort BoneIndex { get; set; }
     public AnimationTrack AnimationTrack { get; set; }
     public ushort FrameCount { get; set; }
+    public ushort Unknown { get; set; }
     public IInterpolation Interpolation { get; set; }
 
     public override string ToString() => 
@@ -70,7 +71,7 @@ public class Record
         AnimationTrack = (AnimationTrack)reader.ReadByte();
         byte interpolationType = reader.ReadByte();
         FrameCount = reader.ReadUInt16();
-        _ = reader.ReadUInt16();
+        Unknown = reader.ReadUInt16();
 
         Interpolation = _bayo1InterpolationFactory[interpolationType]();
 
@@ -94,7 +95,7 @@ public class Record
         AnimationTrack = (AnimationTrack)reader.ReadByte();
         byte interpolationType = reader.ReadByte();
         FrameCount = reader.ReadUInt16();
-        _ = reader.ReadUInt16();
+        Unknown = reader.ReadUInt16();
         Interpolation = _bayo2InterpolationFactory[interpolationType]();
 
         if (Interpolation is InterpolationConstant interpolationConstant)
@@ -115,7 +116,7 @@ public class Record
         writer.Write((byte)AnimationTrack);
         writer.Write((byte)_bayo1InterpolationTypes[Interpolation.GetType()]);
         writer.Write(FrameCount);
-        writer.Write((ushort)(BoneIndex == 0x7FFF ? 0 : 0xFFFF));
+        writer.Write(Unknown);
 
         if (Interpolation is InterpolationConstant valueConstant)
         {
