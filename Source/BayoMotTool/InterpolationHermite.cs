@@ -73,4 +73,9 @@ public class InterpolationHermite : IInterpolation
 
         return KeyFrames[^1].Value;
     }
+
+    public bool Resize(int count)
+    {
+        return false;
+    }
 }

@@ -39,4 +39,16 @@ public class InterpolationLinearQuantizedHalf : IInterpolation
 
         return v0 + (v1 - v0) * (frame - index);
     }
+
+    public bool Resize(int count)
+    {
+        var values = new byte[count];
+
+        for (int i = 0; i < count; i++)
+            values[i] = Values[int.Min(i, Values.Length - 1)];
+
+        Values = values;
+
+        return true;
+    }
 }

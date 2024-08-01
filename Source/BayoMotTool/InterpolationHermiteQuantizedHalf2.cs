@@ -100,4 +100,9 @@ public class InterpolationHermiteQuantizedHalf2 : IInterpolation
 
         return valueBias + valueScale * KeyFrames[^1].Value;
     }
+
+    public bool Resize(int count)
+    {
+        return false;
+    }
 }

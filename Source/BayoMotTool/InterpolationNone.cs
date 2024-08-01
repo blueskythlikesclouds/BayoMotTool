@@ -18,4 +18,9 @@ public class InterpolationNone : IInterpolation
     {
         return 0.0f;
     }
+
+    public bool Resize(int count)
+    {
+        return false;
+    }
 }

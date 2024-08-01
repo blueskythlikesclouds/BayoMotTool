@@ -48,12 +48,9 @@ foreach (var record in motion.Records)
 
     if (record.Interpolation is InterpolationConstant)
         record.FrameCount = 2;
-}
 
-if (boneConfig.BonesToCreate != null)
-{ 
-    foreach (var boneToCreate in boneConfig.BonesToCreate)
-        MotionUtility.AddDefaultRecords(motion, boneToCreate.BoneIndex, new Vector3(boneToCreate.BoneTranslationX, boneToCreate.BoneTranslationY, boneToCreate.BoneTranslationZ));
+    else if (record.Interpolation.Resize(motion.FrameCount))
+        record.FrameCount = motion.FrameCount;
 }
 
 if (boneConfig.BonesToAttach != null)
@@ -67,6 +64,12 @@ if (boneConfig.BonesToAttach != null)
             new Vector3(boneToAttach.BoneTranslationX, boneToAttach.BoneTranslationY, boneToAttach.BoneTranslationZ),
             boneToAttach.InvertParentTransform);
     }
+}
+
+if (boneConfig.BonesToCreate != null)
+{
+    foreach (var boneToCreate in boneConfig.BonesToCreate)
+        MotionUtility.AddDefaultRecords(motion, boneToCreate.BoneIndex, new Vector3(boneToCreate.BoneTranslationX, boneToCreate.BoneTranslationY, boneToCreate.BoneTranslationZ));
 }
 
 if (boneConfig.BonesToReorient != null)

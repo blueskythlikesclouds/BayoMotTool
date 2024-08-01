@@ -1,10 +1,11 @@
-﻿using System.Numerics;
+﻿using System.Buffers.Binary;
+using System.Numerics;
 
 namespace BayoMotTool;
 
 public class Model
 {
-    public short[] BoneIndexTable { get; set; }
+    public List<short> BoneIndexTable { get; set; } = [];
     public Vector3[] BoneRelativePositions { get; set; }
 
     public int MapIndex(int boneIndex)
@@ -17,16 +18,25 @@ public class Model
                 return BoneIndexTable[(boneIndex & 0xF) + index];
         }
 
-        return -1;
+        return 0xFFF;
     }
 
-    public void ReadBayo1(BinaryReader reader)
+    public void ReadBayo1(EndianBinaryReader reader)
     {
         reader.BaseStream.Seek(0x30, SeekOrigin.Begin);
 
         int boneCount = reader.ReadInt32();
         _ = reader.ReadInt32();
         uint boneRelativePositionsOffset = reader.ReadUInt32();
+
+        if (boneRelativePositionsOffset > reader.BaseStream.Length)
+        {
+            boneCount = BinaryPrimitives.ReverseEndianness(boneCount);
+            boneRelativePositionsOffset = BinaryPrimitives.ReverseEndianness(boneRelativePositionsOffset);
+
+            reader.IsBigEndian = true;
+        }
+
         _ = reader.ReadInt32();
         uint boneIndexTableOffset = reader.ReadUInt32();
 
@@ -45,10 +55,28 @@ public class Model
 
         reader.BaseStream.Seek(boneIndexTableOffset, SeekOrigin.Begin);
 
-        BoneIndexTable = new short[272];
+        int j = 0;
+        for (int i = 0; i < 16; i++)
+        {
+            short index = reader.ReadInt16();
+            if (index != -1)
+                ++j;
 
-        for (int i = 0; i < BoneIndexTable.Length; i++)
-            BoneIndexTable[i] = reader.ReadInt16();
+            BoneIndexTable.Add(index);
+        }
+
+        int k = 0;
+        for (int i = 0; i < j * 16; i++)
+        {
+            short index = reader.ReadInt16();
+            if (index != -1)
+                ++k;
+
+            BoneIndexTable.Add(index);
+        }
+
+        for (int i = 0; i < k * 16; i++)
+            BoneIndexTable.Add(reader.ReadInt16());
     }
 
     public void LoadBayo1(string filePath)

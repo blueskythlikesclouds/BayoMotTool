@@ -219,10 +219,7 @@ public static class MotionUtility
         AnimationTrack.TranslationZ,
         AnimationTrack.RotationX,
         AnimationTrack.RotationY,
-        AnimationTrack.RotationZ,
-        AnimationTrack.ScaleX,
-        AnimationTrack.ScaleY,
-        AnimationTrack.ScaleZ,
+        AnimationTrack.RotationZ
     };
 
     public static void AddDefaultRecords(Motion motion, int boneIndex, Vector3 boneTranslation)

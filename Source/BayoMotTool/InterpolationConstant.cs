@@ -21,5 +21,10 @@ public class InterpolationConstant : IInterpolation
         return Value;
     }
 
+    public bool Resize(int count)
+    {
+        return false;
+    }
+
     public override string ToString() => $"{Value}";
 }
