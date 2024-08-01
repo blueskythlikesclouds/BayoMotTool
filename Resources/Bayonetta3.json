@@ -94,44 +94,6 @@
         "2569": 36
     },
     "RemoveUnmappedBones": true,
-    "BonesToCreate": [
-        {
-            "BoneIndex": 8,
-            "BoneTranslationX": -0.063186,
-            "BoneTranslationY": 0.015647,
-            "BoneTranslationZ": -0.023102
-        },
-        {
-            "BoneIndex": 9,
-            "BoneTranslationX": -0.063186,
-            "BoneTranslationY": 0.015647,
-            "BoneTranslationZ": -0.023102
-        },
-        {
-            "BoneIndex": 12,
-            "BoneTranslationX": 0,
-            "BoneTranslationY": 0,
-            "BoneTranslationZ": 0
-        },
-        {
-            "BoneIndex": 14,
-            "BoneTranslationX": 0.063186,
-            "BoneTranslationY": 0.015647,
-            "BoneTranslationZ": -0.023102
-        },
-        {
-            "BoneIndex": 15,
-            "BoneTranslationX": 0.063186,
-            "BoneTranslationY": 0.015647,
-            "BoneTranslationZ": -0.023102
-        },
-        {
-            "BoneIndex": 18,
-            "BoneTranslationX": 0,
-            "BoneTranslationY": 0,
-            "BoneTranslationZ": 0
-        }
-    ],
     "BonesToAttach": [
         {
             "ParentBoneIndex": 8,
@@ -150,9 +112,9 @@
             "ParentBoneTranslationY": 0.015647,
             "ParentBoneTranslationZ": -0.023102,
             "BoneIndex": 15,
-            "BoneTranslatonX": 0.063186,
-            "BoneTranslatonY": 0.015647,
-            "BoneTranslatonZ": -0.023102,
+            "BoneTranslationX": 0.063186,
+            "BoneTranslationY": 0.015647,
+            "BoneTranslationZ": -0.023102,
             "InvertParentTransform": true
         },
         {
@@ -176,6 +138,176 @@
             "BoneTranslationY": -0.486195,
             "BoneTranslationZ": -0.029279,
             "InvertParentTransform": true
+        }
+    ],
+    "BonesToCreate": [
+        {
+            "BoneIndex": 0,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 1.249601,
+            "BoneTranslationZ": 0
+        },
+        {
+            "BoneIndex": 1,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": 0
+        },
+        {
+            "BoneIndex": 2,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0.070209,
+            "BoneTranslationZ": 0.009931
+        },
+        {
+            "BoneIndex": 3,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0.082217,
+            "BoneTranslationZ": -0.009344
+        },
+        {
+            "BoneIndex": 4,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0.199966,
+            "BoneTranslationZ": -0.034405
+        },
+        {
+            "BoneIndex": 5,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0.045358,
+            "BoneTranslationZ": 0.005032
+        },
+        {
+            "BoneIndex": 6,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0.037693,
+            "BoneTranslationZ": 0.006316
+        },
+        {
+            "BoneIndex": 7,
+            "BoneTranslationX": -0.06,
+            "BoneTranslationY": 0.15,
+            "BoneTranslationZ": -0.0283
+        },
+        {
+            "BoneIndex": 8,
+            "BoneTranslationX": -0.063186,
+            "BoneTranslationY": 0.015647,
+            "BoneTranslationZ": -0.023102
+        },
+        {
+            "BoneIndex": 9,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": 0
+        },
+        {
+            "BoneIndex": 10,
+            "BoneTranslationX": -0.261563,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": -0.001
+        },
+        {
+            "BoneIndex": 11,
+            "BoneTranslationX": -0.27059,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": 0.001
+        },
+        {
+            "BoneIndex": 12,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": 0
+        },
+        {
+            "BoneIndex": 13,
+            "BoneTranslationX": 0.06,
+            "BoneTranslationY": 0.15,
+            "BoneTranslationZ": -0.0283
+        },
+        {
+            "BoneIndex": 14,
+            "BoneTranslationX": 0.063186,
+            "BoneTranslationY": 0.015647,
+            "BoneTranslationZ": -0.023102
+        },
+        {
+            "BoneIndex": 15,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": 0
+        },
+        {
+            "BoneIndex": 16,
+            "BoneTranslationX": 0.261563,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": -0.001
+        },
+        {
+            "BoneIndex": 17,
+            "BoneTranslationX": 0.27059,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": 0.001
+        },
+        {
+            "BoneIndex": 18,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": 0
+        },
+        {
+            "BoneIndex": 19,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": 0,
+            "BoneTranslationZ": 0
+        },
+        {
+            "BoneIndex": 20,
+            "BoneTranslationX": -0.1,
+            "BoneTranslationY": -0.109413,
+            "BoneTranslationZ": -0.017762
+        },
+        {
+            "BoneIndex": 21,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": -0.486195,
+            "BoneTranslationZ": -0.029279
+        },
+        {
+            "BoneIndex": 22,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": -0.508155,
+            "BoneTranslationZ": -0.039784
+        },
+        {
+            "BoneIndex": 23,
+            "BoneTranslationX": -0.000676,
+            "BoneTranslationY": -0.118331,
+            "BoneTranslationZ": 0.078417
+        },
+        {
+            "BoneIndex": 24,
+            "BoneTranslationX": 0.1,
+            "BoneTranslationY": -0.109413,
+            "BoneTranslationZ": -0.017762
+        },
+        {
+            "BoneIndex": 25,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": -0.486195,
+            "BoneTranslationZ": -0.029279
+        },
+        {
+            "BoneIndex": 26,
+            "BoneTranslationX": 0,
+            "BoneTranslationY": -0.508155,
+            "BoneTranslationZ": -0.039784
+        },
+        {
+            "BoneIndex": 27,
+            "BoneTranslationX": 0.000676,
+            "BoneTranslationY": -0.118331,
+            "BoneTranslationZ": 0.078417
         }
     ],
     "BonesToReorient": [

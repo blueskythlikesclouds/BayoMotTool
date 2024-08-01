@@ -29,8 +29,8 @@ public class BoneConfig
 {
     public Dictionary<int, int> BoneMap { get; set; }
     public bool RemoveUnmappedBones { get; set; }
-    public List<BoneToCreate> BonesToCreate { get; set; }
     public List<BoneToAttach> BonesToAttach { get; set; }
+    public List<BoneToCreate> BonesToCreate { get; set; }
     public List<int> BonesToReorient { get; set; }
     public List<BoneToDuplicate> BonesToDuplicate { get; set; }
 }
