@@ -39,12 +39,19 @@ public class Motion
     {
         uint signature = reader.ReadUInt32();
         uint version = reader.ReadUInt32();
-        reader.IsBigEndian = version != 0x20120405;
         Flags = reader.ReadUInt16();
         Flags = 0x1;
         FrameCount = reader.ReadUInt16();
         uint recordOffset = reader.ReadUInt32();
         uint recordCount = reader.ReadUInt32();
+
+        if (recordOffset > reader.BaseStream.Length)
+        {
+            FrameCount = BinaryPrimitives.ReverseEndianness(FrameCount);
+            recordOffset = BinaryPrimitives.ReverseEndianness(recordOffset);
+            recordCount = BinaryPrimitives.ReverseEndianness(recordCount);
+            reader.IsBigEndian = true;
+        }
 
         for (int i = 0; i < recordCount; i++)
         {
