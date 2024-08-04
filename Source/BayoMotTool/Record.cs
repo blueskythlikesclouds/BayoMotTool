@@ -10,7 +10,9 @@ public enum AnimationTrack
     RotationZ = 5,
     ScaleX = 7,
     ScaleY = 8,
-    ScaleZ = 9
+    ScaleZ = 9,
+    Roll = 14,
+    Fovy = 15
 }
 
 public class Record
@@ -22,7 +24,7 @@ public class Record
     public IInterpolation Interpolation { get; set; }
 
     public override string ToString() => 
-        $"{BoneIndex}, {AnimationTrack}, {FrameCount}, {Interpolation}";
+        $"{BoneIndex}, {AnimationTrack}, {FrameCount}, {Unknown}, {Interpolation}";
 
     // 0
     // 4

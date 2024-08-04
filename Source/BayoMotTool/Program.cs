@@ -37,11 +37,12 @@ var boneConfig = JsonSerializer.Deserialize(
 
 var motion = new Motion();
 var format = motion.Load(inputFilePath);
+var targetFormat = format == MotionFormat.Bayonetta2 ? MotionFormat.Bayonetta1 : MotionFormat.Bayonetta2;
 
-if (format == MotionFormat.Bayonetta1)
+if (targetFormat == MotionFormat.Bayonetta2)
 { 
     boneConfig.InvertConfig();
-    motion.Flags = 0x0;
+    motion.Flags &= 0xFFFE;
     motion.Name = Path.GetFileNameWithoutExtension(outputFilePath ?? inputFilePath);
 }
 else
@@ -66,12 +67,12 @@ foreach (var record in motion.Records)
         record.BoneIndex = (ushort)boneIndex;
 
     if (record.Interpolation is InterpolationConstant)
-        record.FrameCount = (ushort)(format == MotionFormat.Bayonetta2 ? 2 : 0);
+        record.FrameCount = (ushort)(targetFormat == MotionFormat.Bayonetta2 ? 2 : 0);
 
-    else if (format == MotionFormat.Bayonetta2 && record.Interpolation.Resize(motion.FrameCount))
+    else if (targetFormat == MotionFormat.Bayonetta1 && record.Interpolation.Resize(motion.FrameCount))
         record.FrameCount = motion.FrameCount;
 
-    if (format == MotionFormat.Bayonetta1)
+    if (targetFormat == MotionFormat.Bayonetta2)
         record.Unknown = 0;
 }
 
@@ -118,7 +119,6 @@ if (boneConfig.BonesToDuplicate != null)
     }
 }
 
-MotionUtility.SortRecords(motion, format == MotionFormat.Bayonetta2);
+MotionUtility.SortRecords(motion, targetFormat == MotionFormat.Bayonetta1);
 
-motion.Save(outputFilePath ?? inputFilePath,
-    format == MotionFormat.Bayonetta2 ? MotionFormat.Bayonetta1 : MotionFormat.Bayonetta2);
+motion.Save(outputFilePath ?? inputFilePath, targetFormat);
