@@ -40,12 +40,13 @@ var format = motion.Load(inputFilePath);
 
 if (format == MotionFormat.Bayonetta1)
 { 
-    motion.Flags = 0x1;
+    boneConfig.InvertConfig();
+    motion.Flags = 0x0;
+    motion.Name = Path.GetFileNameWithoutExtension(outputFilePath ?? inputFilePath);
 }
 else
 {
-    boneConfig.InvertConfig();
-    motion.Flags = 0x0;
+    motion.Flags = 0x1;
 }
 
 motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (boneConfig.BoneMap != null && boneConfig.RemoveUnmappedBones && 

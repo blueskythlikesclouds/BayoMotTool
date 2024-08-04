@@ -1,4 +1,5 @@
 ﻿using System.Buffers.Binary;
+using System.Text;
 
 namespace BayoMotTool;
 
@@ -13,6 +14,7 @@ public class Motion
     public ushort Flags { get; set; }
     public ushort FrameCount { get; set; }
     public List<Record> Records { get; set; } = [];
+    public string Name { get; set; } 
 
     public void ReadBayo1(EndianBinaryReader reader)
     {
@@ -123,11 +125,10 @@ public class Motion
         writer.Write(headerSize);
         writer.Write(Records.Count);
         writer.Write(0);
-        writer.Write(0);
-        writer.Write(0);
-        writer.Write(0);
-        writer.Write(0);
-        writer.Write(0);
+
+        Span<byte> buffer = stackalloc byte[0x14];
+        Encoding.UTF8.GetBytes(Name, buffer);
+        writer.Write(buffer);
 
         var recordOffsets = new long[Records.Count];
 
