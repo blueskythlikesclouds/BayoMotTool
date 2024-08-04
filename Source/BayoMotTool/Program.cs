@@ -54,6 +54,14 @@ motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (boneConfig.BoneMap != nu
 
 foreach (var record in motion.Records)
 {
+    if (format == MotionFormat.Bayonetta1 && record.BoneIndex == 3936)
+    {
+        if (record.AnimationTrack == AnimationTrack.RotationX)
+            record.AnimationTrack = AnimationTrack.Fovy;
+        if (record.AnimationTrack == AnimationTrack.RotationY)
+            record.AnimationTrack = AnimationTrack.Roll;
+    }
+    
     if (boneConfig.BoneMap != null && boneConfig.BoneMap.TryGetValue(record.BoneIndex, out var boneIndex))
         record.BoneIndex = (ushort)boneIndex;
 
