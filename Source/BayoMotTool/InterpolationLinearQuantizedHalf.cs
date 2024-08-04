@@ -25,6 +25,13 @@ public class InterpolationLinearQuantizedHalf : IInterpolation
         writer.Write(Values);
     }
 
+    public void WriteBayo2(BinaryWriter writer)
+    {
+        writer.Write(ValueBias);
+        writer.Write(ValueScale);
+        writer.Write(Values);
+    }
+
     public float Interpolate(float frame)
     {
         float valueBias = PgHalf.ToSingle(ValueBias);

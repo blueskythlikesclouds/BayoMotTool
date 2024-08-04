@@ -303,8 +303,14 @@
         }
     ],
     "BonesToReorient": [
-        10,
-        16
+        {
+            "BoneIndex": 10,
+            "IsYZX": false
+        },
+        {
+            "BoneIndex": 16,
+            "IsYZX": false
+        }
     ],
     "BonesToDuplicate": [
         {

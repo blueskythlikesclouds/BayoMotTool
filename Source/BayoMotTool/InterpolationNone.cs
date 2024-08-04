@@ -14,6 +14,10 @@ public class InterpolationNone : IInterpolation
     {
     }
 
+    public void WriteBayo2(BinaryWriter writer)
+    {
+    }
+
     public float Interpolate(float frame)
     {
         return 0.0f;

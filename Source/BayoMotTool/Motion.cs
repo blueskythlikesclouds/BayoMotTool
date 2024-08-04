@@ -2,6 +2,12 @@
 
 namespace BayoMotTool;
 
+public enum MotionFormat
+{
+    Bayonetta1,
+    Bayonetta2
+}
+
 public class Motion
 {
     public ushort Flags { get; set; }
@@ -40,18 +46,18 @@ public class Motion
         uint signature = reader.ReadUInt32();
         uint version = reader.ReadUInt32();
         Flags = reader.ReadUInt16();
-        Flags = 0x1;
         FrameCount = reader.ReadUInt16();
         uint recordOffset = reader.ReadUInt32();
-        uint recordCount = reader.ReadUInt32();
 
         if (recordOffset > reader.BaseStream.Length)
         {
+            Flags = BinaryPrimitives.ReverseEndianness(FrameCount);
             FrameCount = BinaryPrimitives.ReverseEndianness(FrameCount);
             recordOffset = BinaryPrimitives.ReverseEndianness(recordOffset);
-            recordCount = BinaryPrimitives.ReverseEndianness(recordCount);
             reader.IsBigEndian = true;
         }
+
+        uint recordCount = reader.ReadUInt32();
 
         for (int i = 0; i < recordCount; i++)
         {
@@ -61,17 +67,34 @@ public class Motion
         }
     }
 
+    public MotionFormat Read(EndianBinaryReader reader)
+    {
+        reader.BaseStream.Seek(8, SeekOrigin.Begin);
+        uint recordOffset = reader.ReadUInt32();
+        var motionFormat = recordOffset != 0x10 && recordOffset != 0x10000000 ? MotionFormat.Bayonetta2 : MotionFormat.Bayonetta1;
+
+        reader.BaseStream.Seek(0, SeekOrigin.Begin);
+        if (motionFormat == MotionFormat.Bayonetta2)
+            ReadBayo2(reader);
+        else 
+            ReadBayo1(reader);
+
+        return motionFormat;
+    }
+
     public void WriteBayo1(BinaryWriter writer)
     {
+        const int headerSize = 0x10;
+
         writer.Write(0x746F6D);
         writer.Write(Flags);
         writer.Write(FrameCount);
-        writer.Write(0x10);
+        writer.Write(headerSize);
         writer.Write(Records.Count);
 
         var recordOffsets = new long[Records.Count];
 
-        writer.BaseStream.Seek(16 + Records.Count * 12, SeekOrigin.Begin);
+        writer.BaseStream.Seek(headerSize + Records.Count * 12, SeekOrigin.Begin);
         for (int i = 0; i < Records.Count; i++)
         {
             recordOffsets[i] = writer.BaseStream.Position;
@@ -83,30 +106,68 @@ public class Motion
 
         for (int i = 0; i < Records.Count; i++)
         {
-            writer.BaseStream.Seek(16 + i * 12, SeekOrigin.Begin);
+            writer.BaseStream.Seek(headerSize + i * 12, SeekOrigin.Begin);
 
             Records[i].WriteBayo1(writer, recordOffsets[i]);
         }
     }
 
-    public void LoadBayo1(string filePath)
+    public void WriteBayo2(BinaryWriter writer)
+    {
+        const int headerSize = 0x2C;
+
+        writer.Write(0x746F6D);
+        writer.Write(0x20120405);
+        writer.Write(Flags);
+        writer.Write(FrameCount);
+        writer.Write(headerSize);
+        writer.Write(Records.Count);
+        writer.Write(0);
+        writer.Write(0);
+        writer.Write(0);
+        writer.Write(0);
+        writer.Write(0);
+        writer.Write(0);
+
+        var recordOffsets = new long[Records.Count];
+
+        writer.BaseStream.Seek(headerSize + Records.Count * 12, SeekOrigin.Begin);
+        for (int i = 0; i < Records.Count; i++)
+        {
+            recordOffsets[i] = writer.BaseStream.Position - (headerSize + i * 12);
+            Records[i].Interpolation.WriteBayo2(writer);
+
+            while ((writer.BaseStream.Position % 4) != 0)
+                writer.Write((byte)0);
+        }
+
+        for (int i = 0; i < Records.Count; i++)
+        {
+            writer.BaseStream.Seek(headerSize + i * 12, SeekOrigin.Begin);
+
+            Records[i].WriteBayo2(writer, recordOffsets[i]);
+        }
+    }
+    
+    public void Write(BinaryWriter writer, MotionFormat format)
+    {
+        if (format == MotionFormat.Bayonetta2)
+            WriteBayo2(writer);
+        else
+            WriteBayo1(writer);
+    }
+
+    public MotionFormat Load(string filePath)
     {
         using var stream = File.OpenRead(filePath);
         using var reader = new EndianBinaryReader(stream);
-        ReadBayo1(reader);
+        return Read(reader);
     }
 
-    public void LoadBayo2(string filePath)
-    {
-        using var stream = File.OpenRead(filePath);
-        using var reader = new EndianBinaryReader(stream);
-        ReadBayo2(reader);
-    }
-
-    public void SaveBayo1(string filePath)
+    public void Save(string filePath, MotionFormat format)
     {
         using var stream = File.Create(filePath);
         using var writer = new BinaryWriter(stream);
-        WriteBayo1(writer);
+        Write(writer, format);
     }
 }

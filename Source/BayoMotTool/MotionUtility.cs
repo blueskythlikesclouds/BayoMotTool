@@ -201,15 +201,19 @@ public static class MotionUtility
         AddOrReplaceRecord(AnimationTrack.ScaleZ, scaleZ);
     }
 
-    public static void SortRecords(Motion motion)
+    public static void SortRecords(Motion motion, bool addTerminatorRecord)
     {
         motion.Records = motion.Records.OrderBy(x => x.BoneIndex == 0xFFFF ? 0 : x.BoneIndex + 1).ThenBy(x => x.AnimationTrack).ToList();
-        motion.Records.Add(new Record
-        {
-            BoneIndex = 0x7FFF,
-            AnimationTrack = (AnimationTrack)0xFF,
-            Interpolation = new InterpolationNone()
-        });
+
+        if (addTerminatorRecord)
+        { 
+            motion.Records.Add(new Record
+            {
+                BoneIndex = 0x7FFF,
+                AnimationTrack = (AnimationTrack)0xFF,
+                Interpolation = new InterpolationNone()
+            });
+        }
     }
 
     private static readonly AnimationTrack[] _animationTracks =
@@ -243,7 +247,7 @@ public static class MotionUtility
         }
     }
 
-    public static void ReorientBone(Motion motion, int boneIndex)
+    public static void ReorientBone(Motion motion, int boneIndex, bool isYZX)
     {
         InterpolationLinear MakeInterpolationLinear() =>
             new InterpolationLinear { Values = new float[motion.FrameCount] };
@@ -279,16 +283,30 @@ public static class MotionUtility
                 }
             }
 
-            var transform =
-                Matrix4x4.CreateFromAxisAngle(Vector3.UnitX, x) *
-                Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, y) *
-                Matrix4x4.CreateFromAxisAngle(Vector3.UnitZ, z) *
-                Matrix4x4.Identity;
+            if (isYZX)
+            {
+                var transform =
+                    Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, y) *
+                    Matrix4x4.CreateFromAxisAngle(Vector3.UnitZ, z) *
+                    Matrix4x4.CreateFromAxisAngle(Vector3.UnitX, x);
 
-            ToEulerAnglesYZX(transform,
-                out rotationX.Values[i],
-                out rotationY.Values[i],
-                out rotationZ.Values[i]);
+                ToEulerAnglesXYZ(transform,
+                    out rotationX.Values[i],
+                    out rotationY.Values[i],
+                    out rotationZ.Values[i]);
+            }
+            else
+            { 
+                var transform =
+                    Matrix4x4.CreateFromAxisAngle(Vector3.UnitX, x) *
+                    Matrix4x4.CreateFromAxisAngle(Vector3.UnitY, y) *
+                    Matrix4x4.CreateFromAxisAngle(Vector3.UnitZ, z);
+
+                ToEulerAnglesYZX(transform,
+                    out rotationX.Values[i],
+                    out rotationY.Values[i],
+                    out rotationZ.Values[i]);
+            }
         }
 
         UnrollAngles(rotationX);

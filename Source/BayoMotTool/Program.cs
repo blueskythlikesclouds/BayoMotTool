@@ -36,7 +36,17 @@ var boneConfig = JsonSerializer.Deserialize(
     File.ReadAllText(jsonFilePath), SourceGenerationContext.Default.BoneConfig);
 
 var motion = new Motion();
-motion.LoadBayo2(inputFilePath);
+var format = motion.Load(inputFilePath);
+
+if (format == MotionFormat.Bayonetta1)
+{ 
+    motion.Flags = 0x1;
+}
+else
+{
+    boneConfig.InvertConfig();
+    motion.Flags = 0x0;
+}
 
 motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (boneConfig.BoneMap != null && boneConfig.RemoveUnmappedBones && 
     x.BoneIndex != 0xFFFF && !boneConfig.BoneMap.ContainsKey(x.BoneIndex)));
@@ -47,10 +57,13 @@ foreach (var record in motion.Records)
         record.BoneIndex = (ushort)boneIndex;
 
     if (record.Interpolation is InterpolationConstant)
-        record.FrameCount = 2;
+        record.FrameCount = (ushort)(format == MotionFormat.Bayonetta2 ? 2 : 0);
 
-    else if (record.Interpolation.Resize(motion.FrameCount))
+    else if (format == MotionFormat.Bayonetta2 && record.Interpolation.Resize(motion.FrameCount))
         record.FrameCount = motion.FrameCount;
+
+    if (format == MotionFormat.Bayonetta1)
+        record.Unknown = 0;
 }
 
 if (boneConfig.BonesToAttach != null)
@@ -74,8 +87,8 @@ if (boneConfig.BonesToCreate != null)
 
 if (boneConfig.BonesToReorient != null)
 { 
-    foreach (int boneToReorient in boneConfig.BonesToReorient)
-        MotionUtility.ReorientBone(motion, boneToReorient);
+    foreach (var boneToReorient in boneConfig.BonesToReorient)
+        MotionUtility.ReorientBone(motion, boneToReorient.BoneIndex, boneToReorient.IsYZX);
 }
 
 if (boneConfig.BonesToDuplicate != null)
@@ -96,6 +109,7 @@ if (boneConfig.BonesToDuplicate != null)
     }
 }
 
-MotionUtility.SortRecords(motion);
+MotionUtility.SortRecords(motion, format == MotionFormat.Bayonetta2);
 
-motion.SaveBayo1(outputFilePath ?? inputFilePath);
+motion.Save(outputFilePath ?? inputFilePath,
+    format == MotionFormat.Bayonetta2 ? MotionFormat.Bayonetta1 : MotionFormat.Bayonetta2);

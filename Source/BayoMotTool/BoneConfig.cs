@@ -20,10 +20,13 @@ public record BoneToAttach(
     float BoneTranslationZ,
     bool InvertParentTransform);
 
+public record BoneToReorient(
+    int BoneIndex,
+    bool IsYZX);
+
 public record BoneToDuplicate(
     int SourceBoneIndex,
-    int DestinationBoneIndex
-    );
+    int DestinationBoneIndex);
 
 public class BoneConfig
 {
@@ -31,8 +34,45 @@ public class BoneConfig
     public bool RemoveUnmappedBones { get; set; }
     public List<BoneToAttach> BonesToAttach { get; set; }
     public List<BoneToCreate> BonesToCreate { get; set; }
-    public List<int> BonesToReorient { get; set; }
+    public List<BoneToReorient> BonesToReorient { get; set; }
     public List<BoneToDuplicate> BonesToDuplicate { get; set; }
+
+    public void PrintDuplicates()
+    {
+        foreach (var group in BoneMap.GroupBy(x => x.Value).Where(x => x.Count() > 1))
+        {
+            Console.WriteLine(group.Key);
+            foreach (var v in group)
+                Console.WriteLine("  {0}", v.Key);
+        }
+    }
+
+    public void InvertConfig()
+    {
+        if (BoneMap != null)
+            BoneMap = BoneMap.DistinctBy(x => x.Value).ToDictionary(x => x.Value, x => x.Key);
+
+        if (BonesToAttach != null)
+        { 
+            BonesToAttach = BonesToAttach.Select(x => new BoneToAttach(
+                BoneMap?[x.ParentBoneIndex] ?? x.ParentBoneIndex,
+                x.ParentBoneTranslationX,
+                x.ParentBoneTranslationY,
+                x.ParentBoneTranslationZ,
+                BoneMap?[x.BoneIndex] ?? x.BoneIndex,
+                0.0f,
+                0.0f,
+                0.0f,
+                false)).ToList();
+        }
+
+        BonesToCreate = null;
+
+        if (BonesToReorient != null)
+            BonesToReorient = BonesToReorient.Select(x => new BoneToReorient(x.BoneIndex, true)).ToList();
+
+        BonesToDuplicate = null;
+    }
 }
 
 [JsonSourceGenerationOptions(WriteIndented = true)]

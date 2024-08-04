@@ -47,6 +47,11 @@ public class InterpolationHermite : IInterpolation
         }
     }
 
+    public void WriteBayo2(BinaryWriter writer)
+    {
+        WriteBayo1(writer);
+    }
+
     public float Interpolate(float frame)
     {
         ref var firstKeyFrame = ref KeyFrames[0];

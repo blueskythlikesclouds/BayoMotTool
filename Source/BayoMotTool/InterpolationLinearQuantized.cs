@@ -8,11 +8,6 @@ public class InterpolationLinearQuantized : IInterpolation
 
     public void ReadBayo1(BinaryReader reader, int count)
     {
-        throw new NotImplementedException();
-    }
-
-    public void ReadBayo2(BinaryReader reader, int count)
-    {
         ValueBias = reader.ReadSingle();
         ValueScale = reader.ReadSingle();
 
@@ -22,6 +17,11 @@ public class InterpolationLinearQuantized : IInterpolation
             Values[i] = reader.ReadUInt16();
     }
 
+    public void ReadBayo2(BinaryReader reader, int count)
+    {
+        ReadBayo1(reader, count);
+    }
+
     public void WriteBayo1(BinaryWriter writer)
     {
         writer.Write(ValueBias);
@@ -29,6 +29,11 @@ public class InterpolationLinearQuantized : IInterpolation
 
         foreach (ushort value in Values)
             writer.Write(value);
+    }
+
+    public void WriteBayo2(BinaryWriter writer)
+    {
+        WriteBayo1(writer);
     }
 
     public float Interpolate(float frame)

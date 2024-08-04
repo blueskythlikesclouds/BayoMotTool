@@ -65,6 +65,11 @@ public class InterpolationHermiteQuantizedHalfRelative : IInterpolation
         }
     }
 
+    public void WriteBayo2(BinaryWriter writer)
+    {
+        WriteBayo1(writer);
+    }
+
     public float Interpolate(float frame)
     {
         float valueBias = PgHalf.ToSingle(ValueBias);

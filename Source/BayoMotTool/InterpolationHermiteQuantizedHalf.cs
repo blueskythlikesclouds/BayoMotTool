@@ -84,6 +84,11 @@ public class InterpolationHermiteQuantizedHalf : IInterpolation
         }
     }
 
+    public void WriteBayo2(BinaryWriter writer)
+    {
+        throw new NotImplementedException();
+    }
+
     public float Interpolate(float frame)
     {
         float valueBias = PgHalf.ToSingle(ValueBias);

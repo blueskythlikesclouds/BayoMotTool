@@ -45,10 +45,28 @@ public class Record
     private static readonly Dictionary<int, Func<IInterpolation>> _bayo1InterpolationFactory = new()
     {
         { 0, () => new InterpolationConstant() },
+        { 1, () => new InterpolationLinear() },
+        { 2, () => new InterpolationHermite() },
+        { 3, () => new InterpolationLinearQuantized() },
         { 4, () => new InterpolationHermiteQuantized() },
+        { 5, () => new InterpolationLinearQuantizedHalf() },
         { 6, () => new InterpolationHermiteQuantizedHalfRelative() },
         { 7, () => new InterpolationHermiteQuantizedHalf() },
         { 255, () => new InterpolationNone() }
+    };
+
+    private static readonly Dictionary<Type, int> _bayo2InterpolationTypes = new()
+    {
+        { typeof(InterpolationConstant), 0 },
+        { typeof(InterpolationLinear), 1 },
+        { typeof(InterpolationLinearQuantized), 2 },
+        { typeof(InterpolationLinearQuantizedHalf), 3 },
+        { typeof(InterpolationHermite), 4 },
+        { typeof(InterpolationHermiteQuantized), 5 },
+        { typeof(InterpolationHermiteQuantizedHalf), 6 },
+        { typeof(InterpolationHermiteQuantizedHalfRelative), 7 },
+        { typeof(InterpolationHermiteQuantizedHalf2), 8 },
+        { typeof(InterpolationNone), 255 },
     };
 
     private static readonly Dictionary<int, Func<IInterpolation>> _bayo2InterpolationFactory = new()
@@ -115,6 +133,24 @@ public class Record
         writer.Write(BoneIndex);
         writer.Write((byte)AnimationTrack);
         writer.Write((byte)_bayo1InterpolationTypes[Interpolation.GetType()]);
+        writer.Write(FrameCount);
+        writer.Write(Unknown);
+
+        if (Interpolation is InterpolationConstant valueConstant)
+        {
+            writer.Write(valueConstant.Value);
+        }
+        else if (Interpolation is not InterpolationNone)
+        {
+            writer.Write((uint)valueOffset);
+        }
+    }
+
+    public void WriteBayo2(BinaryWriter writer, long valueOffset)
+    {
+        writer.Write(BoneIndex);
+        writer.Write((byte)AnimationTrack);
+        writer.Write((byte)_bayo2InterpolationTypes[Interpolation.GetType()]);
         writer.Write(FrameCount);
         writer.Write(Unknown);
 

@@ -6,21 +6,26 @@ public class InterpolationLinear : IInterpolation
 
     public void ReadBayo1(BinaryReader reader, int count)
     {
-        throw new NotImplementedException();
-    }
-
-    public void ReadBayo2(BinaryReader reader, int count)
-    {
         Values = new float[count];
 
         for (int i = 0; i < count; i++)
             Values[i] = reader.ReadSingle();
     }
 
+    public void ReadBayo2(BinaryReader reader, int count)
+    {
+        ReadBayo1(reader, count);
+    }
+
     public void WriteBayo1(BinaryWriter writer)
     {
         foreach (float value in Values)
             writer.Write(value);
+    }
+
+    public void WriteBayo2(BinaryWriter writer)
+    {
+        WriteBayo1(writer);
     }
 
     public float Interpolate(float frame)

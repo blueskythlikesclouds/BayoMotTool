@@ -16,6 +16,10 @@ public class InterpolationConstant : IInterpolation
     {
     }
 
+    public void WriteBayo2(BinaryWriter writer)
+    {
+    }
+
     public float Interpolate(float frame)
     {
         return Value;
