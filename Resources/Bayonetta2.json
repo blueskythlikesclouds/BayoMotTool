@@ -90,7 +90,7 @@
         "28673": 3937
     },
     "RemoveUnmappedBones": true,
-    "CameraId": 3936,
+    "CameraIndex": 3936,
     "BonesToAttach": [
         {
             "ParentBoneIndex": 8,

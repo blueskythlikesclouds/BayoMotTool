@@ -32,7 +32,7 @@ public class BoneConfig
 {
     public Dictionary<int, int> BoneMap { get; set; }
     public bool RemoveUnmappedBones { get; set; }
-    public int CameraId { get; set; } = -1;
+    public int CameraIndex { get; set; } = -1;
     public List<BoneToAttach> BonesToAttach { get; set; }
     public List<BoneToCreate> BonesToCreate { get; set; }
     public List<BoneToReorient> BonesToReorient { get; set; }
@@ -67,10 +67,10 @@ public class BoneConfig
                 false)).ToList();
         }
 
-        if (BoneMap.TryGetValue(CameraId, out var cameraId))
-            CameraId = cameraId;
+        if (BoneMap.TryGetValue(CameraIndex, out var cameraId))
+            CameraIndex = cameraId;
         else
-            CameraId = -1;
+            CameraIndex = -1;
 
         BonesToCreate = null;
 

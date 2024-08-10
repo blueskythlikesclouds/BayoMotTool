@@ -61,21 +61,46 @@ else
     motion.Flags |= 0x1;
 }
 
-motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (boneConfig.BoneMap != null && boneConfig.RemoveUnmappedBones && 
-    x.BoneIndex != 0xFFFF && !boneConfig.BoneMap.ContainsKey(x.BoneIndex)));
+motion.Records.RemoveAll(x =>
+{
+    if (x.BoneIndex == 0x7FFF)
+        return true;
+
+    int remappedBoneIndex = -1;
+    if (!boneConfig.BoneMap.TryGetValue(x.BoneIndex, out remappedBoneIndex) && boneConfig.RemoveUnmappedBones && x.BoneIndex != 0xFFFF)
+        return true;
+
+    if (format == MotionFormat.Bayonetta2 && remappedBoneIndex == boneConfig.CameraIndex && 
+        (x.AnimationTrack == AnimationTrack.RotationX || x.AnimationTrack == AnimationTrack.RotationY))
+    {
+        return true;
+    }
+
+    return false;
+});
 
 foreach (var record in motion.Records)
-{
-    if (format == MotionFormat.Bayonetta1 && record.BoneIndex == boneConfig.CameraId)
-    {
-        if (record.AnimationTrack == AnimationTrack.RotationX)
-            record.AnimationTrack = AnimationTrack.Fovy;
-        if (record.AnimationTrack == AnimationTrack.RotationY)
-            record.AnimationTrack = AnimationTrack.Roll;
-    }
-    
+{    
     if (boneConfig.BoneMap != null && boneConfig.BoneMap.TryGetValue(record.BoneIndex, out var boneIndex))
         record.BoneIndex = (ushort)boneIndex;
+
+    if (record.BoneIndex == boneConfig.CameraIndex)
+    {
+        if (targetFormat == MotionFormat.Bayonetta2)
+        {
+            if (record.AnimationTrack == AnimationTrack.RotationX)
+                record.AnimationTrack = AnimationTrack.Fovy;
+            else if (record.AnimationTrack == AnimationTrack.RotationY)
+                record.AnimationTrack = AnimationTrack.Roll;
+        }
+        else
+        {
+            if (record.AnimationTrack == AnimationTrack.Fovy)
+                record.AnimationTrack = AnimationTrack.RotationX;
+            else if (record.AnimationTrack == AnimationTrack.Roll)
+                record.AnimationTrack = AnimationTrack.RotationY;
+        }
+    }
 
     if (record.Interpolation is InterpolationConstant)
         record.FrameCount = (ushort)(targetFormat == MotionFormat.Bayonetta2 ? 2 : 0);
