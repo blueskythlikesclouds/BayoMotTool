@@ -53,6 +53,11 @@ public class BoneConfig
         if (BoneMap != null)
             BoneMap = BoneMap.DistinctBy(x => x.Value).ToDictionary(x => x.Value, x => x.Key);
 
+        if (BoneMap.TryGetValue(CameraIndex, out var cameraId))
+            CameraIndex = cameraId;
+        else
+            CameraIndex = -1;
+
         if (BonesToAttach != null)
         { 
             BonesToAttach = BonesToAttach.Select(x => new BoneToAttach(
@@ -67,15 +72,10 @@ public class BoneConfig
                 false)).ToList();
         }
 
-        if (BoneMap.TryGetValue(CameraIndex, out var cameraId))
-            CameraIndex = cameraId;
-        else
-            CameraIndex = -1;
-
         BonesToCreate = null;
 
         if (BonesToReorient != null)
-            BonesToReorient = BonesToReorient.Select(x => new BoneToReorient(x.BoneIndex, true)).ToList();
+            BonesToReorient = BonesToReorient.Select(x => new BoneToReorient(BoneMap?[x.BoneIndex] ?? x.BoneIndex, true)).ToList();
 
         BonesToDuplicate = null;
     }
