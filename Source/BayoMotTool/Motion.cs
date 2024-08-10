@@ -84,11 +84,14 @@ public class Motion
         return motionFormat;
     }
 
-    public void WriteBayo1(BinaryWriter writer)
+    public void WriteBayo1(EndianBinaryWriter writer)
     {
         const int headerSize = 0x10;
 
-        writer.Write(0x746F6D);
+        writer.Write((byte)'m');
+        writer.Write((byte)'o');
+        writer.Write((byte)'t');
+        writer.Write((byte)'\0');
         writer.Write(Flags);
         writer.Write(FrameCount);
         writer.Write(headerSize);
@@ -114,11 +117,14 @@ public class Motion
         }
     }
 
-    public void WriteBayo2(BinaryWriter writer)
+    public void WriteBayo2(EndianBinaryWriter writer)
     {
         const int headerSize = 0x2C;
 
-        writer.Write(0x746F6D);
+        writer.Write((byte)'m');
+        writer.Write((byte)'o');
+        writer.Write((byte)'t');
+        writer.Write((byte)'\0');
         writer.Write(0x20120405);
         writer.Write(Flags);
         writer.Write(FrameCount);
@@ -150,7 +156,7 @@ public class Motion
         }
     }
     
-    public void Write(BinaryWriter writer, MotionFormat format)
+    public void Write(EndianBinaryWriter writer, MotionFormat format)
     {
         if (format == MotionFormat.Bayonetta2)
             WriteBayo2(writer);
@@ -165,10 +171,11 @@ public class Motion
         return Read(reader);
     }
 
-    public void Save(string filePath, MotionFormat format)
+    public void Save(string filePath, MotionFormat format, bool isBigEndian)
     {
         using var stream = File.Create(filePath);
-        using var writer = new BinaryWriter(stream);
+        using var writer = new EndianBinaryWriter(stream);
+        writer.IsBigEndian = isBigEndian;
         Write(writer, format);
     }
 }

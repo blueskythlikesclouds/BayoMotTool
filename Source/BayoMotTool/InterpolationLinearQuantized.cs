@@ -6,7 +6,7 @@ public class InterpolationLinearQuantized : IInterpolation
     public float ValueScale { get; set; }
     public ushort[] Values { get; set; }
 
-    public void ReadBayo1(BinaryReader reader, int count)
+    public void ReadBayo1(EndianBinaryReader reader, int count)
     {
         ValueBias = reader.ReadSingle();
         ValueScale = reader.ReadSingle();
@@ -17,12 +17,12 @@ public class InterpolationLinearQuantized : IInterpolation
             Values[i] = reader.ReadUInt16();
     }
 
-    public void ReadBayo2(BinaryReader reader, int count)
+    public void ReadBayo2(EndianBinaryReader reader, int count)
     {
         ReadBayo1(reader, count);
     }
 
-    public void WriteBayo1(BinaryWriter writer)
+    public void WriteBayo1(EndianBinaryWriter writer)
     {
         writer.Write(ValueBias);
         writer.Write(ValueScale);
@@ -31,7 +31,7 @@ public class InterpolationLinearQuantized : IInterpolation
             writer.Write(value);
     }
 
-    public void WriteBayo2(BinaryWriter writer)
+    public void WriteBayo2(EndianBinaryWriter writer)
     {
         WriteBayo1(writer);
     }

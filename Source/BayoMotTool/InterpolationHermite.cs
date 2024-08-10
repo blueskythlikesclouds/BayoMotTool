@@ -14,7 +14,7 @@ public class InterpolationHermite : IInterpolation
 
     public KeyFrame[] KeyFrames { get; set; }
 
-    public void ReadBayo1(BinaryReader reader, int count)
+    public void ReadBayo1(EndianBinaryReader reader, int count)
     {
         KeyFrames = new KeyFrame[count];
 
@@ -30,12 +30,12 @@ public class InterpolationHermite : IInterpolation
         }
     }
 
-    public void ReadBayo2(BinaryReader reader, int count)
+    public void ReadBayo2(EndianBinaryReader reader, int count)
     {
         ReadBayo1(reader, count);
     }
 
-    public void WriteBayo1(BinaryWriter writer)
+    public void WriteBayo1(EndianBinaryWriter writer)
     {
         foreach (var keyFrame in KeyFrames)
         {
@@ -47,7 +47,7 @@ public class InterpolationHermite : IInterpolation
         }
     }
 
-    public void WriteBayo2(BinaryWriter writer)
+    public void WriteBayo2(EndianBinaryWriter writer)
     {
         WriteBayo1(writer);
     }

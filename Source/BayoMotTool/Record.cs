@@ -85,7 +85,7 @@ public class Record
         { 255, () => new InterpolationNone() }
     };
 
-    public void ReadBayo1(BinaryReader reader)
+    public void ReadBayo1(EndianBinaryReader reader)
     {
         BoneIndex = reader.ReadUInt16();
         AnimationTrack = (AnimationTrack)reader.ReadByte();
@@ -107,7 +107,7 @@ public class Record
         }
     }
 
-    public void ReadBayo2(BinaryReader reader, long recordOffset)
+    public void ReadBayo2(EndianBinaryReader reader, long recordOffset)
     {
         reader.BaseStream.Seek(recordOffset, SeekOrigin.Begin);
 
@@ -130,7 +130,7 @@ public class Record
         }
     }
 
-    public void WriteBayo1(BinaryWriter writer, long valueOffset)
+    public void WriteBayo1(EndianBinaryWriter writer, long valueOffset)
     {
         writer.Write(BoneIndex);
         writer.Write((byte)AnimationTrack);
@@ -148,7 +148,7 @@ public class Record
         }
     }
 
-    public void WriteBayo2(BinaryWriter writer, long valueOffset)
+    public void WriteBayo2(EndianBinaryWriter writer, long valueOffset)
     {
         writer.Write(BoneIndex);
         writer.Write((byte)AnimationTrack);

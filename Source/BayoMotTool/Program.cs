@@ -5,10 +5,15 @@ using System.Text.Json;
 string inputFilePath = null;
 string outputFilePath = null;
 string jsonFilePath = null;
+bool isBigEndian = false;
 
 foreach (var arg in args)
 {
-    if (arg.EndsWith(".mot", StringComparison.OrdinalIgnoreCase))
+    if (arg.Equals("-b", StringComparison.OrdinalIgnoreCase) || arg.Equals("--big-endian", StringComparison.OrdinalIgnoreCase))
+    { 
+        isBigEndian = true;
+    }
+    else if (arg.EndsWith(".mot", StringComparison.OrdinalIgnoreCase))
     {
         if (inputFilePath == null)
             inputFilePath = arg;
@@ -16,12 +21,18 @@ foreach (var arg in args)
             outputFilePath = arg;
     }
     else if (arg.EndsWith(".json", StringComparison.OrdinalIgnoreCase))
+    { 
         jsonFilePath = arg;
+    }
 }
 
 if (inputFilePath == null)
 {
-    Console.WriteLine("Usage: [input] [output] [json]");
+    Console.WriteLine("Usage:");
+    Console.WriteLine("  [options] [input] [output] [json]");
+    Console.WriteLine();
+    Console.WriteLine("Options:");
+    Console.WriteLine("  -b or --big-endian: Save output as big endian");
     return;
 }
 
@@ -55,7 +66,7 @@ motion.Records.RemoveAll(x => x.BoneIndex == 0x7FFF || (boneConfig.BoneMap != nu
 
 foreach (var record in motion.Records)
 {
-    if (format == MotionFormat.Bayonetta1 && record.BoneIndex == 3936)
+    if (format == MotionFormat.Bayonetta1 && record.BoneIndex == boneConfig.CameraId)
     {
         if (record.AnimationTrack == AnimationTrack.RotationX)
             record.AnimationTrack = AnimationTrack.Fovy;
@@ -121,4 +132,4 @@ if (boneConfig.BonesToDuplicate != null)
 
 MotionUtility.SortRecords(motion, targetFormat == MotionFormat.Bayonetta1);
 
-motion.Save(outputFilePath ?? inputFilePath, targetFormat);
+motion.Save(outputFilePath ?? inputFilePath, targetFormat, isBigEndian);

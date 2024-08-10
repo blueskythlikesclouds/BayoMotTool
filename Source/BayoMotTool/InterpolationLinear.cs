@@ -4,7 +4,7 @@ public class InterpolationLinear : IInterpolation
 {
     public float[] Values { get; set; }
 
-    public void ReadBayo1(BinaryReader reader, int count)
+    public void ReadBayo1(EndianBinaryReader reader, int count)
     {
         Values = new float[count];
 
@@ -12,18 +12,18 @@ public class InterpolationLinear : IInterpolation
             Values[i] = reader.ReadSingle();
     }
 
-    public void ReadBayo2(BinaryReader reader, int count)
+    public void ReadBayo2(EndianBinaryReader reader, int count)
     {
         ReadBayo1(reader, count);
     }
 
-    public void WriteBayo1(BinaryWriter writer)
+    public void WriteBayo1(EndianBinaryWriter writer)
     {
         foreach (float value in Values)
             writer.Write(value);
     }
 
-    public void WriteBayo2(BinaryWriter writer)
+    public void WriteBayo2(EndianBinaryWriter writer)
     {
         WriteBayo1(writer);
     }

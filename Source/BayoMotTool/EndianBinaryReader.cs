@@ -3,7 +3,7 @@ using System.Text;
 
 namespace BayoMotTool;
 
-public class EndianBinaryReader : BinaryReader
+public sealed class EndianBinaryReader : BinaryReader
 {
     public EndianBinaryReader(Stream input) : base(input)
     {

@@ -6,26 +6,26 @@ public class InterpolationLinearQuantizedHalf : IInterpolation
     public ushort ValueScale { get; set; }
     public byte[] Values { get; set; }
 
-    public void ReadBayo1(BinaryReader reader, int count)
+    public void ReadBayo1(EndianBinaryReader reader, int count)
     {
         throw new NotImplementedException();
     }
 
-    public void ReadBayo2(BinaryReader reader, int count)
+    public void ReadBayo2(EndianBinaryReader reader, int count)
     {
         ValueBias = reader.ReadUInt16();
         ValueScale = reader.ReadUInt16();
         Values = reader.ReadBytes(count);
     }
 
-    public void WriteBayo1(BinaryWriter writer)
+    public void WriteBayo1(EndianBinaryWriter writer)
     {
         writer.Write(PgHalf.ToSingle(ValueBias));
         writer.Write(PgHalf.ToSingle(ValueScale));
         writer.Write(Values);
     }
 
-    public void WriteBayo2(BinaryWriter writer)
+    public void WriteBayo2(EndianBinaryWriter writer)
     {
         writer.Write(ValueBias);
         writer.Write(ValueScale);

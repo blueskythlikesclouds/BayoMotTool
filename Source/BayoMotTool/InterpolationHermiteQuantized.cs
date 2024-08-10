@@ -20,7 +20,7 @@ public class InterpolationHermiteQuantized : IInterpolation
     public float OutScale { get; set; }
     public KeyFrame[] KeyFrames { get; set; }
 
-    public void ReadBayo1(BinaryReader reader, int count)
+    public void ReadBayo1(EndianBinaryReader reader, int count)
     {
         ValueBias = reader.ReadSingle();
         ValueScale = reader.ReadSingle();
@@ -42,12 +42,12 @@ public class InterpolationHermiteQuantized : IInterpolation
         }
     }
 
-    public void ReadBayo2(BinaryReader reader, int count)
+    public void ReadBayo2(EndianBinaryReader reader, int count)
     {
         ReadBayo1(reader, count);
     }
 
-    public void WriteBayo1(BinaryWriter writer)
+    public void WriteBayo1(EndianBinaryWriter writer)
     {
         writer.Write(ValueBias);
         writer.Write(ValueScale);
@@ -65,7 +65,7 @@ public class InterpolationHermiteQuantized : IInterpolation
         }
     }
 
-    public void WriteBayo2(BinaryWriter writer)
+    public void WriteBayo2(EndianBinaryWriter writer)
     {
         WriteBayo1(writer);
     }
